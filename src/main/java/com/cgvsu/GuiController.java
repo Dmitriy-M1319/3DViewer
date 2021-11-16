@@ -3,6 +3,7 @@ package com.cgvsu;
 import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.MyModel;
 import com.cgvsu.myreader.MyObjReader;
+import com.cgvsu.obj_writer.ObjWriter;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -35,7 +36,7 @@ public class GuiController {
 
     private float percent = 1;
     private float alpha = 0;
-    private Vector3f target = new Vector3f(0,0,0);
+    private Vector3f target = new Vector3f(0,0,1);
 
     private Camera camera = new Camera(
             new Vector3f(0, 00, 100),
@@ -97,6 +98,22 @@ public class GuiController {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
+        }
+    }
+
+    @FXML
+    public void onSaveModelMenuItemClick() {
+        FileChooser chooser = new FileChooser();
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
+        chooser.setTitle("Save Model");
+
+        File file = chooser.showSaveDialog((Stage) canvas.getScene().getWindow());
+
+        Path filename = Path.of(file.getAbsolutePath());
+        try {
+            ObjWriter.write(model, filename.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage()); //todo сделать нормальные обработки ошибок
         }
     }
 

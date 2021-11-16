@@ -17,7 +17,7 @@ public class ObjWriter {
     private static String writeVector3f(final ArrayList<Vector3f> vectors, String token){
         StringBuilder str = new StringBuilder();
         for (Vector3f vector : vectors) {
-            str.append(token).append(vector.toString());
+            str.append(token).append(vector.toString()).append('\n');
         }
         return str.toString();
     }
@@ -25,7 +25,7 @@ public class ObjWriter {
     private static String writeVector2f(final ArrayList<Vector2f> vectors){
         StringBuilder str = new StringBuilder();
         for (Vector2f vector : vectors) {
-            str.append("vt ").append(vector.toString());
+            str.append("vt ").append(vector.toString()).append('\n');
         }
         return str.toString();
     }

@@ -7,12 +7,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Simple3DViewer extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        Locale.setDefault(Locale.ROOT);
         AnchorPane viewport = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("fxml/gui.fxml")));
 
         Scene scene = new Scene(viewport);
