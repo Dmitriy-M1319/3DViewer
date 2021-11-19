@@ -107,7 +107,7 @@ public class GraphicConveyorTest {
             }
         }
     }
-    
+
     public static boolean almostEqual(double firstValue, double secondValue, double accuracy) {
         return Math.abs(firstValue - secondValue) < accuracy;
     }
