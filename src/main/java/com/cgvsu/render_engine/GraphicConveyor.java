@@ -6,28 +6,19 @@ import com.cgvsu.math.matrix.Matrix4x4;
 import com.cgvsu.math.point.Point2f;
 import com.cgvsu.math.vector.Vector3f;
 
-
 public class GraphicConveyor {
 
     public static Matrix4x4 rotateScaleTranslate(float percent, float alpha, char token, Vector3f target) throws Exception {
         Matrix3x3 s = scale(percent);
-        Matrix3x3 r = null;
-        switch (token) {
-            case 'x':
-                r = rotateX(alpha);
-                break;
-            case 'y':
-                r = rotateY(alpha);
-                break;
-            case 'z':
-                r = rotateZ(alpha);
-            default:
-                r = Matrix3x3.getOneMatrix();
-        }
+        Matrix3x3 r = switch (token) {
+            case 'x' -> rotateX(alpha);
+            case 'y' -> rotateY(alpha);
+            case 'z' -> rotateZ(alpha);
+            default -> Matrix3x3.getOneMatrix();
+        };
+
         Matrix4x4 t = translate(target);
-
         Matrix3x3 rs = r.mul(s);
-
         float[][] rs4 = new float[][] {
                 {rs.get(0,0), rs.get(0, 1) , rs.get(0, 2), 0},
                 {rs.get(1,0), rs.get(1, 1) , rs.get(1, 2), 0},
@@ -50,26 +41,29 @@ public class GraphicConveyor {
     }
 
     public static Matrix3x3 rotateZ(float alpha) { //Пока относительно только z
+        double radians = Math.toRadians(alpha);
         float[][] matrix = new float[][] {
-                {(float) Math.cos(alpha), (float) Math.sin(alpha), 0},
-                {(float) (-Math.sin(alpha)),(float) Math.cos(alpha), 0},
+                {(float) Math.cos(radians), (float) Math.sin(radians), 0},
+                {(float) (-Math.sin(radians)),(float) Math.cos(radians), 0},
                 {0, 0, 1}
         };
         return new Matrix3x3(matrix);
     }
     public static Matrix3x3 rotateX(float alpha) {
+        double radians = Math.toRadians(alpha);
         float[][] matrix = new float[][] {
                 {1, 0, 0},
-                {0, (float) Math.cos(alpha), (float) Math.sin(alpha)},
-                {0, (float) (-Math.sin(alpha)),(float) Math.cos(alpha)},
+                {0, (float) Math.cos(radians), (float) Math.sin(radians)},
+                {0, (float) (-Math.sin(radians)),(float) Math.cos(radians)},
         };
         return new Matrix3x3(matrix);
     }
     public static Matrix3x3 rotateY(float alpha) {
+        double radians = Math.toRadians(alpha);
         float[][] matrix = new float[][] {
-                {(float)Math.cos(alpha), 0, (float) Math.sin(alpha)},
+                {(float)Math.cos(radians), 0, (float) Math.sin(radians)},
                 {0, 1, 0},
-                {(float) (-Math.sin(alpha)), 0, (float) Math.cos(alpha)}
+                {(float) (-Math.sin(radians)), 0, (float) Math.cos(radians)}
         };
         return new Matrix3x3(matrix);
     }

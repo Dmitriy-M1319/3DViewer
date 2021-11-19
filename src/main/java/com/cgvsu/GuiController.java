@@ -35,12 +35,12 @@ public class GuiController {
     private MyModel model = null;
 
     private float percent = 1;
-    private float alpha = 0;
-    private char token = 'y';
-    private Vector3f target = new Vector3f(1,0,0);
+    private float alpha = 30;
+    private char token = 'x';
+    private Vector3f target = new Vector3f(3,0,2);
 
     private Camera camera = new Camera(
-            new Vector3f(0, 00, 100),
+            new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
             1.0F, 1, 0.01F, 100);
 

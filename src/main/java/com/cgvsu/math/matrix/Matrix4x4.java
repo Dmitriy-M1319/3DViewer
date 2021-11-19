@@ -87,4 +87,17 @@ public class Matrix4x4 {
         return new Matrix4x4(one);
     }
 
+    public float[][] getMatrix() {
+        return matrix;
+    }
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                stringBuilder.append(j + " ");
+            }
+            stringBuilder.append('\n');
+        }
+        return stringBuilder.toString();
+    }
 }
