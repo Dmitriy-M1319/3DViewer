@@ -36,7 +36,8 @@ public class GuiController {
 
     private float percent = 1;
     private float alpha = 0;
-    private Vector3f target = new Vector3f(0,0,1);
+    private char token = 'y';
+    private Vector3f target = new Vector3f(1,0,0);
 
     private Camera camera = new Camera(
             new Vector3f(0, 00, 100),
@@ -62,7 +63,7 @@ public class GuiController {
 
             if (model != null) {
                 try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, percent, alpha, target);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, percent, alpha, target, token);
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     for (StackTraceElement el: e.getStackTrace()) {
@@ -116,6 +117,8 @@ public class GuiController {
             System.out.println(e.getMessage()); //todo сделать нормальные обработки ошибок
         }
     }
+
+    
 
     @FXML
     public void handleScalePlus(ActionEvent actionEvent) {

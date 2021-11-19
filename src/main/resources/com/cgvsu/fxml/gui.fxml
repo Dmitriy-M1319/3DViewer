@@ -64,7 +64,7 @@
                     <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" code="DOWN"/>
                 </accelerator>
             </MenuItem>
-            <MenuItem mnemonicParsing="false" onAction="#handleRotateRight" text="Rotate Right">
+            <MenuItem mnemonicParsing="false" onAction="#handleRotateRight" text="Rotate Right On X">
                 <accelerator>
                     <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" code="RIGHT"/>
                 </accelerator>

@@ -78,7 +78,7 @@ public class Matrix3x3 {
         return new Matrix3x3();
     }
 
-    public Matrix3x3 getOneMatrix() throws Exception {
+    public static Matrix3x3 getOneMatrix() throws Exception {
         float[][] one = {
                 {1, 0, 0},
                 {0, 1, 0},
