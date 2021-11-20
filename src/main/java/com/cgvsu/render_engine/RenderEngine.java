@@ -23,13 +23,19 @@ public class RenderEngine {
             final float alpha,
             final Vector3f target,
             final char token) throws Exception {
-        Matrix4x4 modelMatrix = rotateScaleTranslate(percent, alpha, token, target);
+        Matrix4x4 modelMatrix = scaleRotateTranslate(percent, alpha, token, target);
         Matrix4x4 viewMatrix = camera.getViewMatrix();
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4x4 modelViewProjectionMatrix = modelMatrix.clone();
-        modelViewProjectionMatrix = modelViewProjectionMatrix.mul(viewMatrix);
-        modelViewProjectionMatrix = modelViewProjectionMatrix.mul(projectionMatrix);
+        Matrix4x4 transposedModelMatrix = modelMatrix.transpose();
+        Matrix4x4 transposedViewMatrix = viewMatrix.transpose();
+        Matrix4x4 transposedProjectionMatrix = projectionMatrix.transpose();
+
+        Matrix4x4 modelViewProjectionMatrix = (transposedProjectionMatrix.mul(transposedViewMatrix)).mul(modelMatrix);
+
+//        Matrix4x4 modelViewProjectionMatrix = modelMatrix.clone();
+//        modelViewProjectionMatrix = modelViewProjectionMatrix.mul(viewMatrix);
+//        modelViewProjectionMatrix = modelViewProjectionMatrix.mul(projectionMatrix);
 
         final int nPolygons = model.getFaces().size();
         for (int polygonInd = 0; polygonInd < nPolygons; polygonInd++) {
@@ -38,6 +44,7 @@ public class RenderEngine {
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3f vertex = model.getVertexes().get((model.getFaces().get(polygonInd).vertexIndexes.get(vertexInPolygonInd)) - 1);
+
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);
             }
