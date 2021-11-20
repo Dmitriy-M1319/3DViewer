@@ -10,6 +10,8 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
@@ -17,6 +19,7 @@ import javafx.util.Duration;
 import java.nio.file.Path;
 import java.io.IOException;
 import java.io.File;
+import java.util.Arrays;
 
 
 import com.cgvsu.render_engine.Camera;
@@ -34,17 +37,25 @@ public class GuiController {
 
     private MyModel model = null;
 
-    private float percent = 2;
-    private float alpha = 30;
-    private char token = 'z';
-    private Vector3f target = new Vector3f(0,0, 0);
+    private float percent = 1;
+    private float alpha = 0;
+    private char token = 'x';
+    private Vector3f target = new Vector3f(0,10,0);
 
-    private Camera camera = new Camera(
+
+    private final Camera camera = new Camera(
             new Vector3f(0, 0, 100),
             new Vector3f(0, 0, 0),
             1.0F, 1, 0.01F, 100);
 
     private Timeline timeline;
+
+    @FXML
+    public void exceptionHandler(Exception exception){
+        Alert alert = new Alert(Alert.AlertType.ERROR, "Sorry, but program have got an error while processing your request ;<(" +
+                "\n" + exception.getMessage(), ButtonType.OK);
+        alert.showAndWait();
+    }
 
     @FXML
     private void initialize() {
@@ -65,10 +76,7 @@ public class GuiController {
                 try {
                     RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, percent, alpha, target, token);
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    for (StackTraceElement el: e.getStackTrace()) {
-                        System.out.println(el.toString());
-                    }
+                    exceptionHandler(e);
                 }
             }
         });
@@ -83,7 +91,7 @@ public class GuiController {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Model (*.obj)", "*.obj"));
         fileChooser.setTitle("Load Model");
 
-        File file = fileChooser.showOpenDialog((Stage) canvas.getScene().getWindow());
+        File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
         if (file == null) {
             return;
         }
@@ -92,13 +100,8 @@ public class GuiController {
 
         try {
             model = MyObjReader.read(fileName.toString());
-            // todo: обработка ошибок
-        } catch (IOException exception) {
-            System.out.println(exception.getMessage());
-            System.out.println(exception.getStackTrace());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
+        } catch (Exception exception) {
+            exceptionHandler(exception);
         }
     }
 
@@ -113,17 +116,18 @@ public class GuiController {
         Path filename = Path.of(file.getAbsolutePath());
         try {
             ObjWriter.write(model, filename.toString());
-        } catch (Exception e) {
-            System.out.println(e.getMessage()); //todo сделать нормальные обработки ошибок
+        } catch (Exception exception) {
+            exceptionHandler(exception);
         }
     }
 
-    
+
 
     @FXML
     public void handleScalePlus(ActionEvent actionEvent) {
         percent += 0.05F;
     }
+
     @FXML
     public void handleScaleMinus(ActionEvent actionEvent) {
         if (percent > 0.05F) {
@@ -132,13 +136,21 @@ public class GuiController {
     }
 
     @FXML
+    public void handleSetX(ActionEvent actionEvent) { this.token = 'x';}
+
+    @FXML
+    public void handleSetY(ActionEvent actionEvent) { this.token = 'y';}
+    @FXML
+    public void handleSetZ(ActionEvent actionEvent) { this.token = 'z';}
+
+    @FXML
     public void handleRotateRight(ActionEvent actionEvent) {
-        alpha += 0.1F;
+        alpha += 1;
     }
 
     @FXML
     public void handleRotateLeft(ActionEvent actionEvent) {
-        alpha -=0.1F;
+        alpha -= 1;
     }
 
     @FXML

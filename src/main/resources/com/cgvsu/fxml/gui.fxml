@@ -74,6 +74,21 @@
                     <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" code="LEFT"/>
                 </accelerator>
             </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleSetX" text="Set Rotation on X">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" code="X"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleSetY" text="Set Rotation on Y">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" code="Y"/>
+                </accelerator>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false" onAction="#handleSetZ" text="Set Rotation on Z">
+                <accelerator>
+                    <KeyCodeCombination alt="UP" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" code="Z"/>
+                </accelerator>
+            </MenuItem>
             <MenuItem mnemonicParsing="false" text="Translate">
 
             </MenuItem>
