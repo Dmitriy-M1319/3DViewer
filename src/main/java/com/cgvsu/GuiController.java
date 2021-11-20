@@ -39,8 +39,8 @@ public class GuiController {
 
     private float percent = 1;
     private float alpha = 0;
-    private final char token = 'x';
-    private final Vector3f target = new Vector3f(1,0,0);
+    private char token = 'x';
+    private Vector3f target = new Vector3f(0,0,0);
 
     private final Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -135,13 +135,21 @@ public class GuiController {
     }
 
     @FXML
+    public void handleSetX(ActionEvent actionEvent) { this.token = 'x';}
+
+    @FXML
+    public void handleSetY(ActionEvent actionEvent) { this.token = 'y';}
+    @FXML
+    public void handleSetZ(ActionEvent actionEvent) { this.token = 'z';}
+
+    @FXML
     public void handleRotateRight(ActionEvent actionEvent) {
-        alpha += 0.1F;
+        alpha += 1;
     }
 
     @FXML
     public void handleRotateLeft(ActionEvent actionEvent) {
-        alpha -=0.1F;
+        alpha -= 1;
     }
 
     @FXML
