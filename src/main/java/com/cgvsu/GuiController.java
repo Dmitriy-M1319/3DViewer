@@ -1,23 +1,27 @@
 package com.cgvsu;
 
 import com.cgvsu.math.vector.Vector3f;
+import com.cgvsu.model.ModelSettings;
 import com.cgvsu.model.MyModel;
 import com.cgvsu.myreader.MyObjReader;
 import com.cgvsu.obj_writer.ObjWriter;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import java.nio.file.Path;
 import java.io.File;
+import java.util.ArrayList;
 
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
@@ -30,16 +34,18 @@ public class GuiController {
     AnchorPane anchorPane;
 
     @FXML
+    FlowPane flowPane;
+
+    @FXML
     private Canvas canvas;
+    private ToggleGroup group = new ToggleGroup();
+    private ArrayList<RadioButton>radioButtons = new ArrayList<>();
 
-    private MyModel model = null;
+    private ModelSettings actualModel = null;
+    private ArrayList<ModelSettings> models = new ArrayList<>();
 
-    private float percentX = 1;
-    private float percentY = 1;
-    private float percentZ = 1;
-    private float alpha = 0;
     private char token = 'x';
-    private Vector3f target = new Vector3f(20,0,0);
+
 
 
     private final Camera camera = new Camera(
@@ -61,6 +67,16 @@ public class GuiController {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
+        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+
+            public void changed(ObservableValue<? extends Toggle> changed, Toggle oldValue, Toggle newValue){
+
+                // получаем выбранный элемент RadioButton
+                RadioButton selectedBtn = (RadioButton) newValue;
+                actualModel = models.get(radioButtons.indexOf(selectedBtn));
+            }
+        });
+
         timeline = new Timeline();
         timeline.setCycleCount(Animation.INDEFINITE);
 
@@ -71,9 +87,9 @@ public class GuiController {
             canvas.getGraphicsContext2D().clearRect(0, 0, width, height);
             camera.setAspectRatio((float) (width / height));
 
-            if (model != null) {
+            if (actualModel != null) {
                 try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, percentX, percentY, percentZ, alpha, target, token);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, actualModel.getModel(), (int) width, (int) height, actualModel.getPercent(),actualModel.getPercent(), actualModel.getPercent(), actualModel.getAlpha(), actualModel.getTarget(), token);
                 } catch (Exception e) {
                     exceptionHandler(e);
                 }
@@ -84,6 +100,7 @@ public class GuiController {
         timeline.play();
     }
 
+    private int counter = 1;
     @FXML
     private void onOpenModelMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
@@ -98,7 +115,16 @@ public class GuiController {
         Path fileName = Path.of(file.getAbsolutePath());
 
         try {
-            model = MyObjReader.read(fileName.toString());
+            MyModel model = MyObjReader.read(fileName.toString());
+            ModelSettings modelSettings = new ModelSettings(model);
+            models.add(modelSettings);
+            actualModel = modelSettings;
+
+            RadioButton button = new RadioButton("Model " + Integer.toString(counter));
+            button.setToggleGroup(group);
+            radioButtons.add(button);
+            flowPane.getChildren().add(button);
+            counter++;
         } catch (Exception exception) {
             exceptionHandler(exception);
         }
@@ -114,7 +140,7 @@ public class GuiController {
 
         Path filename = Path.of(file.getAbsolutePath());
         try {
-            ObjWriter.write(model, filename.toString());
+            ObjWriter.write(actualModel.getModel(), filename.toString());
         } catch (Exception exception) {
             exceptionHandler(exception);
         }
@@ -124,14 +150,12 @@ public class GuiController {
 // todo: Сделать для каждой оси.
     @FXML
     public void handleScalePlus(ActionEvent actionEvent) {
-        percentX += 0.05F;
+        actualModel.plusPercent();
     }
 
     @FXML
     public void handleScaleMinus(ActionEvent actionEvent) {
-        if (percentX > 0.05F) {
-            percentX -= 0.05F;
-        }
+        actualModel.minusPercent();
     }
 
     @FXML
@@ -144,12 +168,12 @@ public class GuiController {
 
     @FXML
     public void handleRotateRight(ActionEvent actionEvent) {
-        alpha += 1;
+        actualModel.plusAlpha();
     }
 
     @FXML
     public void handleRotateLeft(ActionEvent actionEvent) {
-        alpha -= 1;
+        actualModel.minusAlpha();
     }
 
     @FXML
