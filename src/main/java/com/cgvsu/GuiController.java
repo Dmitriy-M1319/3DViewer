@@ -17,10 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import java.nio.file.Path;
-import java.io.IOException;
 import java.io.File;
-import java.util.Arrays;
-
 
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
@@ -40,7 +37,7 @@ public class GuiController {
     private float percent = 1;
     private float alpha = 0;
     private char token = 'x';
-    private Vector3f target = new Vector3f(0,10,0);
+    private Vector3f target = new Vector3f(20,0,0);
 
 
     private final Camera camera = new Camera(

@@ -27,15 +27,9 @@ public class RenderEngine {
         Matrix4x4 viewMatrix = camera.getViewMatrix();
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
 
-        Matrix4x4 transposedModelMatrix = modelMatrix.transpose();
-        Matrix4x4 transposedViewMatrix = viewMatrix.transpose();
         Matrix4x4 transposedProjectionMatrix = projectionMatrix.transpose();
 
-        Matrix4x4 modelViewProjectionMatrix = (transposedProjectionMatrix.mul(transposedViewMatrix)).mul(modelMatrix);
-
-//        Matrix4x4 modelViewProjectionMatrix = modelMatrix.clone();
-//        modelViewProjectionMatrix = modelViewProjectionMatrix.mul(viewMatrix);
-//        modelViewProjectionMatrix = modelViewProjectionMatrix.mul(projectionMatrix);
+        Matrix4x4 modelViewProjectionMatrix = (transposedProjectionMatrix.mul(viewMatrix)).mul(modelMatrix);
 
         final int nPolygons = model.getFaces().size();
         for (int polygonInd = 0; polygonInd < nPolygons; polygonInd++) {

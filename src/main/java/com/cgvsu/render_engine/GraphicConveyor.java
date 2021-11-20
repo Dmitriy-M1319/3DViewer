@@ -93,10 +93,11 @@ public class GraphicConveyor {
         resultZ = (Vector3f) resultZ.normal();
 
         float[][] matrix = new float[][]{
-                {resultX.getX(), resultY.getX(), resultZ.getX(), 0},
-                {resultX.getY(), resultY.getY(), resultZ.getY(), 0},
-                {resultX.getZ(), resultY.getZ(), resultZ.getZ(), 0},
-                {-resultX.dot(eye), -resultY.dot(eye), -resultZ.dot(eye), 1}};
+                {resultX.getX(), resultY.getX(), resultZ.getX(), -resultX.dot(eye)},
+                {resultX.getY(), resultY.getY(), resultZ.getZ(), -resultY.dot(eye)},
+                {resultX.getZ(), resultY.getZ(), resultZ.getZ(), -resultZ.dot(eye)},
+                {0, 0, 0, 1}
+        };
         return new Matrix4x4(matrix);
     }
 
@@ -114,14 +115,6 @@ public class GraphicConveyor {
         };
         return new Matrix4x4(result1);
     }
-
-//    public static Vector3f multiplyMatrix4ByVector3(final Matrix4x4 matrix, final Vector3f vertex) {
-//        final float x = matrix.get(0, 0) * vertex.getX() + matrix.get(0, 1) * vertex.getY() + matrix.get(0, 2) * vertex.getZ() + matrix.get(0, 3);
-//        final float y = matrix.get(1, 0) * vertex.getX() + matrix.get(1, 1) * vertex.getY() + matrix.get(1, 2) * vertex.getZ() + matrix.get(1, 3);
-//        final float z = matrix.get(2, 0) * vertex.getX() + matrix.get(2, 1) * vertex.getY() + matrix.get(2, 2) * vertex.getZ() + matrix.get(2, 3);
-//
-//        return new Vector3f(x, y, z);
-//    }
 
     public static Vector3f multiplyMatrix4ByVector3(final Matrix4x4 matrix, final Vector3f vertex) {
         final float x = (vertex.getX() * matrix.get(0,0)) + (vertex.getY() * matrix.get(0,1)) + (vertex.getZ() * matrix.get(0, 2)) + matrix.get(0, 3);
