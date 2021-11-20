@@ -19,17 +19,16 @@ public class RenderEngine {
             final MyModel model,
             final int width,
             final int height,
-            final float percent,
+            final float percentX,
+            final float percentY,
+            final float percentZ,
             final float alpha,
             final Vector3f target,
             final char token) throws Exception {
-        Matrix4x4 modelMatrix = scaleRotateTranslate(percent, alpha, token, target);
+        Matrix4x4 modelMatrix = scaleRotateTranslate(percentX, percentY, percentZ, alpha, token, target);
         Matrix4x4 viewMatrix = camera.getViewMatrix();
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
-
-        Matrix4x4 transposedProjectionMatrix = projectionMatrix.transpose();
-
-        Matrix4x4 modelViewProjectionMatrix = (transposedProjectionMatrix.mul(viewMatrix)).mul(modelMatrix);
+        Matrix4x4 modelViewProjectionMatrix = (projectionMatrix.mul(viewMatrix)).mul(modelMatrix);
 
         final int nPolygons = model.getFaces().size();
         for (int polygonInd = 0; polygonInd < nPolygons; polygonInd++) {

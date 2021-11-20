@@ -8,9 +8,8 @@ import com.cgvsu.math.vector.Vector3f;
 
 public class GraphicConveyor {
 
-    // todo Do scale for every vertex. (x, y, z)
-    public static Matrix4x4 scaleRotateTranslate(float percent, float alpha, char token, Vector3f target) throws Exception {
-        Matrix3x3 s = scale(percent);
+    public static Matrix4x4 scaleRotateTranslate(float percent_x, float percent_y, float percent_z, float alpha, char token, Vector3f target) throws Exception {
+        Matrix3x3 s = scale(percent_x, percent_y, percent_z);
                 Matrix3x3 r = switch (token) {
             case 'x' -> rotateX(alpha);
             case 'y' -> rotateY(alpha);
@@ -28,15 +27,13 @@ public class GraphicConveyor {
         };
         Matrix4x4 result = t.mul(new Matrix4x4(rs4));
         return result;
-        //return Matrix4x4.getOneMatrix();
     }
 
-
-    public static Matrix3x3 scale(float percent) {
+    public static Matrix3x3 scale(float percentX, float percentY, float percentZ) {
         float[][] matrix = new float[][] {
-                {percent, 0, 0},
-                {0, percent, 0},
-                {0, 0, percent}
+                {percentX, 0, 0},
+                {0, percentY, 0},
+                {0, 0, percentZ}
         };
         return new Matrix3x3(matrix);
     }
@@ -110,8 +107,8 @@ public class GraphicConveyor {
         float[][] result1 = new float[][]{
                 {tangentMinusOnDegree / aspectRatio, 0, 0, 0},
                 {0, tangentMinusOnDegree, 0, 0},
-                {0, 0, (farPlane + nearPlane) / (farPlane - nearPlane), 1.0F},
-                {0, 0, 2 * (nearPlane * farPlane) / (nearPlane - farPlane), 0}
+                {0, 0, (farPlane + nearPlane) / (farPlane - nearPlane), 2 * (nearPlane * farPlane) / (nearPlane - farPlane)},
+                {0, 0, 1.0F, 0}
         };
         return new Matrix4x4(result1);
     }

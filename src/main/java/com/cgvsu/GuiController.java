@@ -34,7 +34,9 @@ public class GuiController {
 
     private MyModel model = null;
 
-    private float percent = 1;
+    private float percentX = 1;
+    private float percentY = 1;
+    private float percentZ = 1;
     private float alpha = 0;
     private char token = 'x';
     private Vector3f target = new Vector3f(20,0,0);
@@ -71,7 +73,7 @@ public class GuiController {
 
             if (model != null) {
                 try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, percent, alpha, target, token);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, model, (int) width, (int) height, percentX, percentY, percentZ, alpha, target, token);
                 } catch (Exception e) {
                     exceptionHandler(e);
                 }
@@ -119,16 +121,16 @@ public class GuiController {
     }
 
 
-
+// todo: Сделать для каждой оси.
     @FXML
     public void handleScalePlus(ActionEvent actionEvent) {
-        percent += 0.05F;
+        percentX += 0.05F;
     }
 
     @FXML
     public void handleScaleMinus(ActionEvent actionEvent) {
-        if (percent > 0.05F) {
-            percent -= 0.05F;
+        if (percentX > 0.05F) {
+            percentX -= 0.05F;
         }
     }
 
