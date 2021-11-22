@@ -4,13 +4,17 @@ import com.cgvsu.math.vector.Vector3f;
 
 public class ModelSettings {
     private MyModel model;
-    private float percent;
+    private float percentX;
+    private float percentY;
+    private float percentZ;
     private float alpha;
     private Vector3f target;
 
     public ModelSettings(MyModel model) {
         this.model = model;
-        percent = 0;
+        percentX = 1;
+        percentY = 1;
+        percentZ = 1;
         alpha = 0;
         target = new Vector3f(0 ,0,0);
     }
@@ -19,8 +23,8 @@ public class ModelSettings {
         return model;
     }
 
-    public float getPercent() {
-        return percent;
+    public float getPercentX() {
+        return percentX;
     }
 
     public float getAlpha() {
@@ -31,14 +35,24 @@ public class ModelSettings {
         return target;
     }
 
-    public void plusPercent() {
-        percent += 0.05F;
+    public float getPercentY() {
+        return percentY;
     }
 
-    public void minusPercent() {
-        if (percent > 0.05F) {
-            percent -= 0.05F;
-        }
+    public void setPercentZ(float percentZ) {
+        this.percentZ = percentZ;
+    }
+
+    public void setPercentY(float percentY) {
+        this.percentY = percentY;
+    }
+
+    public void setPercentX(float percentX) {
+        this.percentX = percentX;
+    }
+
+    public float getPercentZ() {
+        return percentZ;
     }
 
     public void plusAlpha() { alpha++; }

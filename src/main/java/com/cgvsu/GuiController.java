@@ -7,15 +7,18 @@ import com.cgvsu.myreader.MyObjReader;
 import com.cgvsu.obj_writer.ObjWriter;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -35,6 +38,9 @@ public class GuiController {
 
     @FXML
     FlowPane flowPane;
+
+    @FXML
+    VBox graphicConveyorArea;
 
     @FXML
     private Canvas canvas;
@@ -89,7 +95,7 @@ public class GuiController {
 
             if (actualModel != null) {
                 try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, actualModel.getModel(), (int) width, (int) height, actualModel.getPercent(),actualModel.getPercent(), actualModel.getPercent(), actualModel.getAlpha(), actualModel.getTarget(), token);
+                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, actualModel.getModel(), (int) width, (int) height, actualModel.getPercentX(),actualModel.getPercentY(), actualModel.getPercentZ(), actualModel.getAlpha(), actualModel.getTarget(), token);
                 } catch (Exception e) {
                     exceptionHandler(e);
                 }
@@ -146,16 +152,71 @@ public class GuiController {
         }
     }
 
+    @FXML
+    private void handleMakeScaleArea() {
+        Label name = new Label("Scale");
+        name.setAlignment(Pos.CENTER);
+        Label labelX = new Label("Set X coordinate");
+        Label labelY = new Label("Set Y coordinate");
+        Label labelZ = new Label("Set Z coordinate");
 
-// todo: Сделать для каждой оси.
+        TextField setXArea = new TextField("1");
+        TextField setYArea = new TextField("1");
+        TextField setZArea = new TextField("1");
+
+        Button result = new Button("Scale");
+        result.setOnAction(actionEvent -> {
+            actualModel.setPercentX(Float.parseFloat(setXArea.getText()));
+            actualModel.setPercentY(Float.parseFloat(setYArea.getText()));
+            actualModel.setPercentZ(Float.parseFloat(setZArea.getText()));
+        });
+
+
+        if(graphicConveyorArea.getChildren().size() != 0) {
+            graphicConveyorArea.getChildren().clear();
+        }
+
+        graphicConveyorArea.getChildren().addAll(name, labelX, setXArea, labelY, setYArea, labelZ, setZArea, result);
+
+    }
+
+    @FXML
+    private void handleMakeTranslationArea() {
+        Label name = new Label("Translate");
+        name.setAlignment(Pos.CENTER);
+        Label labelX = new Label("Set X coordinate");
+        Label labelY = new Label("Set Y coordinate");
+        Label labelZ = new Label("Set Z coordinate");
+
+        TextField setXArea = new TextField("0");
+        TextField setYArea = new TextField("0");
+        TextField setZArea = new TextField("0");
+
+        Button result = new Button("Translate");
+        result.setOnAction(actionEvent -> actualModel.setTarget(new Vector3f(Float.parseFloat(setXArea.getText()), Float.parseFloat(setYArea.getText()), Float.parseFloat(setZArea.getText()))));
+
+
+        if(graphicConveyorArea.getChildren().size() != 0) {
+            graphicConveyorArea.getChildren().clear();
+        }
+
+        graphicConveyorArea.getChildren().addAll(name, labelX, setXArea, labelY, setYArea, labelZ, setZArea, result);
+
+    }
+
+
     @FXML
     public void handleScalePlus(ActionEvent actionEvent) {
-        actualModel.plusPercent();
+        actualModel.setPercentX(actualModel.getPercentX() + 0.1F);
+        actualModel.setPercentY(actualModel.getPercentY() + 0.1F);
+        actualModel.setPercentZ(actualModel.getPercentY() + 0.1F);
     }
 
     @FXML
     public void handleScaleMinus(ActionEvent actionEvent) {
-        actualModel.minusPercent();
+        actualModel.setPercentX(actualModel.getPercentX() - 0.1F);
+        actualModel.setPercentY(actualModel.getPercentY() - 0.1F);
+        actualModel.setPercentZ(actualModel.getPercentY() - 0.1F);
     }
 
     @FXML
