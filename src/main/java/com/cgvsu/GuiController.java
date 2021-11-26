@@ -77,7 +77,7 @@ public class GuiController {
 
             public void changed(ObservableValue<? extends Toggle> changed, Toggle oldValue, Toggle newValue){
 
-                // получаем выбранный элемент RadioButton
+                //получаем выбранный элемент RadioButton
                 RadioButton selectedBtn = (RadioButton) newValue;
                 actualModel = models.get(radioButtons.indexOf(selectedBtn));
             }
