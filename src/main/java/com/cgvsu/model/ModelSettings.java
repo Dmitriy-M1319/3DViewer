@@ -9,8 +9,9 @@ public class ModelSettings {
     private float percentZ;
     private float alpha;
     private Vector3f target;
+    private Vector3f cameraPos;
 
-    public ModelSettings(MyModel model) {
+    public ModelSettings(MyModel model, Vector3f cameraPos, Vector3f modelPos) {
         this.model = model;
         percentX = 1;
         percentY = 1;
@@ -62,4 +63,11 @@ public class ModelSettings {
         target = vector;
     }
 
+    public void setCameraPos(Vector3f cameraPos) {
+        this.cameraPos = cameraPos;
+    }
+
+    public Vector3f getCameraPos() {
+        return cameraPos;
+    }
 }

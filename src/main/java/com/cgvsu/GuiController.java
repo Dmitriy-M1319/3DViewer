@@ -16,15 +16,18 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import java.nio.file.Path;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
@@ -43,10 +46,12 @@ public class GuiController {
     VBox graphicConveyorArea;
 
     @FXML
-    private Canvas canvas;
-    private ToggleGroup group = new ToggleGroup();
-    private ArrayList<RadioButton>radioButtons = new ArrayList<>();
+    FlowPane modelMenu;
 
+    @FXML
+    private Canvas canvas;
+    private ToggleGroup modelSelectionGroup = new ToggleGroup();
+    private ArrayList<RadioButton> radioButtons = new ArrayList<>();
     private ModelSettings actualModel = null;
     private ArrayList<ModelSettings> models = new ArrayList<>();
 
@@ -73,13 +78,63 @@ public class GuiController {
         anchorPane.prefWidthProperty().addListener((ov, oldValue, newValue) -> canvas.setWidth(newValue.doubleValue()));
         anchorPane.prefHeightProperty().addListener((ov, oldValue, newValue) -> canvas.setHeight(newValue.doubleValue()));
 
-        group.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+        modelSelectionGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
 
             public void changed(ObservableValue<? extends Toggle> changed, Toggle oldValue, Toggle newValue){
 
                 // получаем выбранный элемент RadioButton
                 RadioButton selectedBtn = (RadioButton) newValue;
+
+                //Сохраняем старую позицию камеры для модели, выставляем камеру для текущей модели
+                actualModel.setCameraPos(camera.getPosition());
                 actualModel = models.get(radioButtons.indexOf(selectedBtn));
+                if (actualModel.getCameraPos() != null) {
+                    camera.setPosition(actualModel.getCameraPos());
+                    camera.setTarget(actualModel.getTarget());
+                }
+
+                //Создаём интерфейс для перемещения текущей модели, убираем старый
+                modelMenu.getChildren().clear();
+                Vector3f actualModelCoords = actualModel.getTarget();
+                Text textX = new Text("X moving:");
+                TextField selectX = new TextField(Float.toString(actualModelCoords.getX()));
+                selectX.setText(Float.toString(actualModelCoords.getX()));
+                modelMenu.getChildren().add(textX);
+                modelMenu.getChildren().add(selectX);
+                Text textY = new Text("Y moving:");
+                TextField selectY = new TextField(Float.toString(actualModelCoords.getY()));
+                selectX.setText(Float.toString(actualModelCoords.getY()));
+                modelMenu.getChildren().add(textY);
+                modelMenu.getChildren().add(selectY);
+                Text textZ = new Text("Z moving:");
+                TextField selectZ = new TextField(Float.toString(actualModelCoords.getZ()));
+                selectX.setText(Float.toString(actualModelCoords.getZ()));
+                modelMenu.getChildren().add(textZ);
+                modelMenu.getChildren().add(selectZ);
+                Button button = new Button("Update model position");
+                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        try {
+                            Vector3f newModelTarget = new Vector3f(Float.parseFloat(selectX.getText()),
+                                    Float.parseFloat(selectY.getText()),
+                                    Float.parseFloat(selectZ.getText()));
+
+                            //Здесь просчитываем позицию камеры относительно модели, потом получаем новую позицию камеры
+                            Vector3f betweenModelAndCamera = (Vector3f)
+                                    actualModel.getCameraPos().subtraction(actualModel.getTarget());
+                            Vector3f newCameraPos = (Vector3f) newModelTarget.sum(betweenModelAndCamera);
+
+                            camera.setPosition(newCameraPos);
+                            camera.setTarget(newModelTarget);
+                            actualModel.setTarget(newModelTarget);
+                            actualModel.setCameraPos(newCameraPos);
+                        } catch (Exception e) {
+                            exceptionHandler(e);
+                        }
+                    }
+                });
+                modelMenu.getChildren().add(button);
             }
         });
 
@@ -94,17 +149,22 @@ public class GuiController {
             camera.setAspectRatio((float) (width / height));
 
             if (actualModel != null) {
-                try {
-                    RenderEngine.render(canvas.getGraphicsContext2D(), camera, actualModel.getModel(), (int) width, (int) height, actualModel.getPercentX(),actualModel.getPercentY(), actualModel.getPercentZ(), actualModel.getAlpha(), actualModel.getTarget(), token);
-                } catch (Exception e) {
-                    exceptionHandler(e);
+                for (ModelSettings model:
+                        models) {
+                    try {
+                        RenderEngine.render(canvas.getGraphicsContext2D(), camera, model.getModel(), (int) width, (int) height, model.getPercentX(), model.getPercentY(), model.getPercentZ(), model.getAlpha(), model.getTarget(), token);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+                //RenderEngine.render(canvas.getGraphicsContext2D(), camera, actualModel.getModel(), (int) width, (int) height, actualModel.getPercentX(),actualModel.getPercentY(), actualModel.getPercentZ(), actualModel.getAlpha(), actualModel.getTarget(), token);
             }
         });
 
         timeline.getKeyFrames().add(frame);
         timeline.play();
     }
+
 
     private int counter = 1;
     @FXML
@@ -122,12 +182,12 @@ public class GuiController {
 
         try {
             MyModel model = MyObjReader.read(fileName.toString());
-            ModelSettings modelSettings = new ModelSettings(model);
+            ModelSettings modelSettings = new ModelSettings(model, new Vector3f(0, 0, 100),
+                    new Vector3f(0, 0, 0));
             models.add(modelSettings);
             actualModel = modelSettings;
-
             RadioButton button = new RadioButton("Model " + Integer.toString(counter));
-            button.setToggleGroup(group);
+            button.setToggleGroup(modelSelectionGroup);
             radioButtons.add(button);
             flowPane.getChildren().add(button);
             counter++;
