@@ -82,7 +82,7 @@ public class GuiController {
 
             public void changed(ObservableValue<? extends Toggle> changed, Toggle oldValue, Toggle newValue){
 
-                // получаем выбранный элемент RadioButton
+                //получаем выбранный элемент RadioButton
                 RadioButton selectedBtn = (RadioButton) newValue;
 
                 //Сохраняем старую позицию камеры для модели, выставляем камеру для текущей модели
