@@ -8,38 +8,63 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
+import java.util.Arrays;
+
 import static com.cgvsu.render_engine.GraphicConveyor.multiplyMatrix4ByVector3;
+import static com.cgvsu.render_engine.GraphicConveyor.scaleRotateTranslate;
 
 public class SomeMathTests {
 
     @Test
-    public void multiplyMatrix4ByVector3Test01() {
+    public void multiplyMatrix4ByVector3TestFull01() throws Exception {
+        Matrix4x4 result = scaleRotateTranslate(2, 2, 2, 30, 'x', new Vector3f(3, 2, 1));
         float[][] matrix = new float[][] {
-                {1.732f, 1,  0, 10},
-                {-1,  1.732f,0, 10},
-                {0,      0,  2, 0},
-                {0,      0,  0, 1}
+                {2, 0, 0, 3},
+                {0, 1.73F, 1, 2},
+                {0, -1, 1.73F, 1},
+                {0, 0, 0, 1}
         };
-        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
-        Vector3f vector3f = new Vector3f(10, 10, 10);
-        Vector3f expectedResult = new Vector3f(37.32f, 17.32f, 20);
-        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
-        Assertions.assertEquals(result, expectedResult);
+        Matrix4x4 expectedResult = new Matrix4x4(matrix);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                Assertions.assertTrue(almostEqual(expectedResult.get(i, j), result.get(i, j), 0.1F));
+            }
+        }
     }
 
     @Test
-    public void multiplyMatrix4ByVector3Test02() {
+    public void multiplyMatrix4ByVector3TestFull02() throws Exception {
+        Matrix4x4 result = scaleRotateTranslate(2, 2, 2, 30, 'y', new Vector3f(3, 2, 1));
         float[][] matrix = new float[][] {
-                {1.732f, 1,  0, 10},
-                {-1,  1.732f,0, 10},
-                {0,      0,  2, 0},
-                {0,      0,  0, 1}
+                {1.732F, 0.0F, 1.0F, 3.0F},
+                {0.0F, 2.0F, 0.0F, 2.0F},
+                {-1.0F, 0.0F, 1.73F, 1.0F},
+                {0.0F, 0.0F, 0.0F, 1.0F}
         };
-        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
-        Vector3f vector3f = new Vector3f(10, 0, 0);
-        Vector3f expectedResult = new Vector3f(27.32f, 0, 0);
-        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
-        Assertions.assertEquals(result, expectedResult);
+        Matrix4x4 expectedResult = new Matrix4x4(matrix);
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                Assertions.assertTrue(almostEqual(expectedResult.get(i, j), result.get(i, j), 0.1F));
+            }
+        }
+    }
+
+    @Test
+    public void multiplyMatrix4ByVector3TestFull03() throws Exception {
+        Matrix4x4 result = scaleRotateTranslate(2, 2, 2, 30, 'z', new Vector3f(3, 2, 1));
+        float[][] matrix = new float[][] {
+                {1.73F, 1.0F, 0.0F, 3.0F},
+                {-1.0F, 1.732F, 0.0F, 2.0F},
+                {0.0F, 0.0F, 2.0F, 1.0F},
+                {0.0F, 0.0F, 0.0F, 1.0F}
+        };
+        Matrix4x4 expectedResult = new Matrix4x4(matrix);
+        System.out.println(Arrays.deepToString(result.getMatrix()));
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                Assertions.assertTrue(almostEqual(expectedResult.get(i, j), result.get(i, j), 0.1F));
+            }
+        }
     }
 
     @Test
