@@ -68,6 +68,7 @@ public class GuiController {
 
     @FXML
     public void exceptionHandler(Exception exception){
+        exception.printStackTrace();
         Alert alert = new Alert(Alert.AlertType.ERROR, "Sorry, but program have got an error while processing your request ;<(" +
                 "\n" + exception.getMessage(), ButtonType.OK);
         alert.showAndWait();
@@ -122,7 +123,7 @@ public class GuiController {
 
                             //Здесь просчитываем позицию камеры относительно модели, потом получаем новую позицию камеры
                             Vector3f betweenModelAndCamera = (Vector3f)
-                                    actualModel.getCameraPos().subtraction(actualModel.getTarget());
+                                    camera.getPosition().subtraction(actualModel.getTarget());
                             Vector3f newCameraPos = (Vector3f) newModelTarget.sum(betweenModelAndCamera);
 
                             camera.setPosition(newCameraPos);
