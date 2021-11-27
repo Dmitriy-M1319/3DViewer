@@ -16,6 +16,66 @@ import static com.cgvsu.render_engine.GraphicConveyor.scaleRotateTranslate;
 public class SomeMathTests {
 
     @Test
+    public void multiplyMatrix4ByVector3Test01() {
+        float[][] matrix = new float[][] {
+                {1.732f, 1,  0, 10},
+                {-1,  1.732f,0, 10},
+                {0,      0,  2, 0},
+                {0,      0,  0, 1}
+        };
+        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
+        Vector3f vector3f = new Vector3f(10, 10, 10);
+        Vector3f expectedResult = new Vector3f(37.32f, 17.32f, 20);
+        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
+        Assertions.assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void multiplyMatrix4ByVector3Test02() {
+        float[][] matrix = new float[][] {
+                {1.732f, 1,  0, 10},
+                {-1,  1.732f,0, 10},
+                {0,      0,  2, 0},
+                {0,      0,  0, 1}
+        };
+        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
+        Vector3f vector3f = new Vector3f(10, 0, 0);
+        Vector3f expectedResult = new Vector3f(27.32f, 0, 0);
+        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
+        Assertions.assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void multiplyMatrix4ByVector3Test03() {
+        float[][] matrix = new float[][] {
+                {1.732f, 1,  0, 10},
+                {-1,  1.732f,0, 10},
+                {0,      0,  2, 0},
+                {0,      0,  0, 1}
+        };
+        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
+        Vector3f vector3f = new Vector3f(0, 10, 0);
+        Vector3f expectedResult = new Vector3f(20f, 27.32f, 0);
+        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
+        Assertions.assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void multiplyMatrix4ByVector3Test04() {
+        float[][] matrix = new float[][] {
+                {1.732f, 1,  0, 10},
+                {-1,  1.732f,0, 10},
+                {0,      0,  2, 0},
+                {0,      0,  0, 1}
+        };
+        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
+        Vector3f vector3f = new Vector3f(0, 0, 10);
+        Vector3f expectedResult = new Vector3f(10f, 10f, 20);
+        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
+        Assertions.assertEquals(result, expectedResult);
+    }
+
+    @Test
     public void multiplyMatrix4ByVector3TestFull01() throws Exception {
         Matrix4x4 result = scaleRotateTranslate(2, 2, 2, 30, 'x', new Vector3f(3, 2, 1));
         float[][] matrix = new float[][] {
@@ -66,37 +126,7 @@ public class SomeMathTests {
             }
         }
     }
-
-    @Test
-    public void multiplyMatrix4ByVector3Test03() {
-        float[][] matrix = new float[][] {
-                {1.732f, 1,  0, 10},
-                {-1,  1.732f,0, 10},
-                {0,      0,  2, 0},
-                {0,      0,  0, 1}
-        };
-        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
-        Vector3f vector3f = new Vector3f(0, 10, 0);
-        Vector3f expectedResult = new Vector3f(20f, 27.32f, 0);
-        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
-        Assertions.assertEquals(result, expectedResult);
-    }
-
-    @Test
-    public void multiplyMatrix4ByVector3Test04() {
-        float[][] matrix = new float[][] {
-                {1.732f, 1,  0, 10},
-                {-1,  1.732f,0, 10},
-                {0,      0,  2, 0},
-                {0,      0,  0, 1}
-        };
-        Matrix4x4 matrix4x4 = new Matrix4x4(matrix);
-        Vector3f vector3f = new Vector3f(0, 0, 10);
-        Vector3f expectedResult = new Vector3f(10f, 10f, 20);
-        Vector3f result = multiplyMatrix4ByVector3(matrix4x4, vector3f);
-        Assertions.assertEquals(result, expectedResult);
-    }
-
+    
     @Test
     public void lookAtTest() throws Exception {
         Matrix4x4 result = GraphicConveyor.lookAt(new Vector3f(100, 210, 30), new Vector3f(20, 100, 10), new Vector3f(0, 1, 0));
