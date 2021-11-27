@@ -11,13 +11,14 @@ public class ModelSettings {
     private Vector3f target;
     private Vector3f cameraPos;
 
-    public ModelSettings(MyModel model, Vector3f cameraPos, Vector3f modelPos) {
+    public ModelSettings(MyModel model, Vector3f cameraPos) {
         this.model = model;
         percentX = 1;
         percentY = 1;
         percentZ = 1;
         alpha = 0;
         target = new Vector3f(0 ,0,0);
+        this.cameraPos = cameraPos;
     }
 
     public MyModel getModel() {

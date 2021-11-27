@@ -87,55 +87,17 @@ public class GuiController {
                 RadioButton selectedBtn = (RadioButton) newValue;
 
                 //Сохраняем старую позицию камеры для модели, выставляем камеру для текущей модели
-                actualModel.setCameraPos(camera.getPosition());
-                actualModel = models.get(radioButtons.indexOf(selectedBtn));
+                if (actualModel == null){
+                    actualModel = models.get(radioButtons.indexOf(selectedBtn));
+                } else {
+                    actualModel.setCameraPos(camera.getPosition());
+                    actualModel = models.get(radioButtons.indexOf(selectedBtn));
+                }
                 if (actualModel.getCameraPos() != null) {
                     camera.setPosition(actualModel.getCameraPos());
                     camera.setTarget(actualModel.getTarget());
                 }
-
-                //Создаём интерфейс для перемещения текущей модели, убираем старый
-                modelMenu.getChildren().clear();
-                Vector3f actualModelCoords = actualModel.getTarget();
-                Text textX = new Text("X moving:");
-                TextField selectX = new TextField(Float.toString(actualModelCoords.getX()));
-                selectX.setText(Float.toString(actualModelCoords.getX()));
-                modelMenu.getChildren().add(textX);
-                modelMenu.getChildren().add(selectX);
-                Text textY = new Text("Y moving:");
-                TextField selectY = new TextField(Float.toString(actualModelCoords.getY()));
-                selectX.setText(Float.toString(actualModelCoords.getY()));
-                modelMenu.getChildren().add(textY);
-                modelMenu.getChildren().add(selectY);
-                Text textZ = new Text("Z moving:");
-                TextField selectZ = new TextField(Float.toString(actualModelCoords.getZ()));
-                selectX.setText(Float.toString(actualModelCoords.getZ()));
-                modelMenu.getChildren().add(textZ);
-                modelMenu.getChildren().add(selectZ);
-                Button button = new Button("Update model position");
-                button.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        try {
-                            Vector3f newModelTarget = new Vector3f(Float.parseFloat(selectX.getText()),
-                                    Float.parseFloat(selectY.getText()),
-                                    Float.parseFloat(selectZ.getText()));
-
-                            //Здесь просчитываем позицию камеры относительно модели, потом получаем новую позицию камеры
-                            Vector3f betweenModelAndCamera = (Vector3f)
-                                    camera.getPosition().subtraction(actualModel.getTarget());
-                            Vector3f newCameraPos = (Vector3f) newModelTarget.sum(betweenModelAndCamera);
-
-                            camera.setPosition(newCameraPos);
-                            camera.setTarget(newModelTarget);
-                            actualModel.setTarget(newModelTarget);
-                            actualModel.setCameraPos(newCameraPos);
-                        } catch (Exception e) {
-                            exceptionHandler(e);
-                        }
-                    }
-                });
-                modelMenu.getChildren().add(button);
+                handleMakeTranslationArea();
             }
         });
 
@@ -183,13 +145,12 @@ public class GuiController {
 
         try {
             MyModel model = MyObjReader.read(fileName.toString());
-            ModelSettings modelSettings = new ModelSettings(model, new Vector3f(0, 0, 100),
-                    new Vector3f(0, 0, 0));
+            ModelSettings modelSettings = new ModelSettings(model, new Vector3f(0, 0, 100));
             models.add(modelSettings);
-            actualModel = modelSettings;
             RadioButton button = new RadioButton("Model " + Integer.toString(counter));
             button.setToggleGroup(modelSelectionGroup);
             radioButtons.add(button);
+            modelSelectionGroup.selectToggle(button.getToggleGroup().getSelectedToggle());
             flowPane.getChildren().add(button);
             counter++;
         } catch (Exception exception) {
@@ -243,6 +204,7 @@ public class GuiController {
 
     @FXML
     private void handleMakeTranslationArea() {
+        graphicConveyorArea.getChildren().clear();
         Label name = new Label("Translate");
         name.setAlignment(Pos.CENTER);
         Label labelX = new Label("Set X coordinate");
@@ -252,9 +214,29 @@ public class GuiController {
         TextField setXArea = new TextField("0");
         TextField setYArea = new TextField("0");
         TextField setZArea = new TextField("0");
+        if (actualModel != null){
+            Vector3f actualModelPosition = actualModel.getTarget();
+            setXArea.setText(Float.toString(actualModelPosition.getX()));
+            setYArea.setText(Float.toString(actualModelPosition.getY()));
+            setZArea.setText(Float.toString(actualModelPosition.getZ()));
+        }
 
-        Button result = new Button("Translate");
-        result.setOnAction(actionEvent -> actualModel.setTarget(new Vector3f(Float.parseFloat(setXArea.getText()), Float.parseFloat(setYArea.getText()), Float.parseFloat(setZArea.getText()))));
+        Button result = new Button("Update model position");
+        result.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    Vector3f newModelTarget = new Vector3f(Float.parseFloat(setXArea.getText()),
+                            Float.parseFloat(setYArea.getText()),
+                            Float.parseFloat(setZArea.getText()));
+                    // Меняем фокус камеры и положение модели
+                    camera.setTarget(newModelTarget);
+                    actualModel.setTarget(newModelTarget);
+                } catch (Exception e) {
+                    exceptionHandler(e);
+                }
+            }
+        });
 
 
         if(graphicConveyorArea.getChildren().size() != 0) {
