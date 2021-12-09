@@ -1,6 +1,8 @@
 package com.cgvsu.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
 
@@ -56,5 +58,21 @@ public class MyModel {
 
     public MyModel() {
 
+    }
+
+    public void triangulateFaces() {
+        int oldCount = faces.size();
+        for (int i = 0; i < oldCount; i++) {
+            ArrayList<Face> newFaces = Face.triangulate(faces.get(i));
+            if (newFaces.size() == 1) {
+                continue;
+            } else {
+                faces.remove(i);
+                for (Face f: newFaces) {
+                    faces.add(0, f);
+                }
+                i += newFaces.size() - 1;
+            }
+        }
     }
 }

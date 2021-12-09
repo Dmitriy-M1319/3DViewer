@@ -119,7 +119,6 @@ public class SomeMathTests {
                 {0.0F, 0.0F, 0.0F, 1.0F}
         };
         Matrix4x4 expectedResult = new Matrix4x4(matrix);
-        System.out.println(Arrays.deepToString(result.getMatrix()));
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 Assertions.assertTrue(almostEqual(expectedResult.get(i, j), result.get(i, j), 0.1F));
