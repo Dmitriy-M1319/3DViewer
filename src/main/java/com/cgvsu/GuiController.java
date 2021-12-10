@@ -115,6 +115,7 @@ public class GuiController {
                 for (ModelSettings model:
                         models) {
                     try {
+                        model.getModel().triangulateFaces();
                         RenderEngine.render(canvas.getGraphicsContext2D(), camera, model.getModel(), (int) width, (int) height, model.getPercentX(), model.getPercentY(), model.getPercentZ(), model.getAlpha(), model.getTarget(), token);
                     } catch (Exception e) {
                         e.printStackTrace();

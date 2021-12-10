@@ -1,30 +1,30 @@
 package com.cgvsu.math.point;
 
-public class Point2f {
-    private float x;
-    private float y;
+public class Point2fInt {
+    private int x;
+    private int y;
 
-    public float getX() {
+    public int getX() {
         return x;
     }
 
-    public float getY() {
+    public int getY() {
         return y;
     }
 
-    public Point2f() {
+    public Point2fInt() {
 
     }
 
-    public void setX(float x) {
+    public void setX(int x) {
         this.x = x;
     }
 
-    public void setY(float y) {
+    public void setY(int y) {
         this.y = y;
     }
 
-    public Point2f(float x, float y) {
+    public Point2fInt(int x, int y) {
         this.x = x;
         this.y = y;
     }
