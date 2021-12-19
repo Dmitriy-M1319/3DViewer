@@ -48,10 +48,7 @@ public class GuiController {
 
     @FXML
     public TextField changeScaleX, changeScaleY, changeScaleZ;
-
-    @FXML
-    public Button resetButton;
-
+    
     @FXML
     private Canvas canvas;
     private ToggleGroup modelSelectionGroup = new ToggleGroup();
