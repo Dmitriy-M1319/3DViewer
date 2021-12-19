@@ -40,13 +40,14 @@ public class RenderEngine {
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3f vertex = model.getVertexes().get((model.getFaces().get(polygonInd).vertexIndexes.get(vertexInPolygonInd)) - 1);
+                //Vector3f projectionVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
 
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);
             }
 
             if (nVerticesInPolygon == 3) {
-                Drawing.Triangle(resultPoints.get(0), resultPoints.get(1), resultPoints.get(2), graphicsContext);
+                Drawing.drawFilledTriangle(resultPoints.get(0), resultPoints.get(1), resultPoints.get(2), graphicsContext);
             }
             graphicsContext.setStroke(Color.BLACK);
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
