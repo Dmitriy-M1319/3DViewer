@@ -8,14 +8,13 @@ import com.cgvsu.math.vector.Vector3f;
 
 public class GraphicConveyor {
 
-    public static Matrix4x4 scaleRotateTranslate(float percent_x, float percent_y, float percent_z, float alpha, char token, Vector3f target) throws Exception {
+    public static Matrix4x4 scaleRotateTranslate(float percent_x, float percent_y, float percent_z, float alpha_x, float alpha_y, float alpha_z, Vector3f target) throws Exception {
         Matrix3x3 s = scale(percent_x, percent_y, percent_z);
-                Matrix3x3 r = switch (token) {
-            case 'x' -> rotateX(alpha);
-            case 'y' -> rotateY(alpha);
-            case 'z' -> rotateZ(alpha);
-            default -> Matrix3x3.getOneMatrix();
-        };
+        Matrix3x3 rX = rotateX(alpha_x);
+        Matrix3x3 rY = rotateY(alpha_y);
+        Matrix3x3 rZ = rotateZ(alpha_z);
+
+        Matrix3x3 r = rX.mul(rY.mul(rZ));
 
         Matrix4x4 t = translate(target);
         Matrix3x3 rs = r.mul(s);

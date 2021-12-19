@@ -66,6 +66,19 @@ public class Vector3f implements Vector {
         return Float.compare(vector3f.x, x) == 0 && Float.compare(vector3f.y, y) == 0 && Float.compare(vector3f.z, z) == 0;
     }
 
+    public void addX(float additionX) {
+        this.x += additionX;
+    }
+
+    public void addY(float additionY) {
+        this.y += additionY;
+    }
+
+    public void addZ(float additionZ) {
+        this.z += additionZ;
+    }
+
+
     public String toString() {
         return String.format("%f %f %f", x, y, z);
     }

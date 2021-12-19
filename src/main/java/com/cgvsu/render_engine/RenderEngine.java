@@ -25,10 +25,11 @@ public class RenderEngine {
             final float percentX,
             final float percentY,
             final float percentZ,
-            final float alpha,
-            final Vector3f target,
-            final char token) throws Exception {
-        Matrix4x4 modelMatrix = scaleRotateTranslate(percentX, percentY, percentZ, alpha, token, target);
+            final float alphaX,
+            final float alphaY,
+            final float alphaZ,
+            final Vector3f target) throws Exception {
+        Matrix4x4 modelMatrix = scaleRotateTranslate(percentX, percentY, percentZ, alphaX, alphaY, alphaZ, target);
         Matrix4x4 viewMatrix = camera.getViewMatrix();
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
         Matrix4x4 modelViewProjectionMatrix = (projectionMatrix.mul(viewMatrix)).mul(modelMatrix);
