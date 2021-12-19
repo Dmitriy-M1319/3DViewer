@@ -7,34 +7,64 @@ public class ModelSettings {
     private float percentX;
     private float percentY;
     private float percentZ;
-    private float alpha;
+    private float alphaX;
+    private float alphaY;
+    private float alphaZ;
     private Vector3f target;
-    private Vector3f cameraPos;
 
-    public ModelSettings(MyModel model, Vector3f cameraPos) {
+    public ModelSettings(MyModel model) {
         this.model = model;
-        percentX = 1;
-        percentY = 1;
-        percentZ = 1;
-        alpha = 0;
+        percentX = 2;
+        percentY = 2;
+        percentZ = 2;
+        alphaX = 90;
+        alphaY = 90;
+        alphaZ = 90;
         target = new Vector3f(0 ,0,0);
-        this.cameraPos = cameraPos;
     }
 
     public MyModel getModel() {
         return model;
     }
 
+    public void increaseScale(float value) {
+        this.percentX *= value;
+        this.percentY *= value;
+        this.percentZ *= value;
+    }
+
     public float getPercentX() {
         return percentX;
     }
 
-    public float getAlpha() {
-        return alpha;
+    public float getAlphaX() {
+        return alphaX;
     }
+
+    public float getAlphaY() {
+        return alphaY;
+    }
+
+    public float getAlphaZ() {
+        return alphaZ;
+    }
+
 
     public Vector3f getTarget() {
         return target;
+    }
+
+    public void addX(float additionX) {
+        this.target = new Vector3f(target.getX() + additionX, target.getY(), target.getZ());
+    }
+
+    public void addY(float additionY) {
+        this.target = new Vector3f(target.getX(), target.getY() + additionY, target.getZ());
+    }
+
+    public void addZ(float additionZ) {
+        this.target = new Vector3f(target.getX(), target.getY(), target.getZ() + additionZ);
+
     }
 
     public float getPercentY() {
@@ -57,18 +87,22 @@ public class ModelSettings {
         return percentZ;
     }
 
-    public void plusAlpha() { alpha++; }
-    public void minusAlpha() { alpha--; }
+    public void plusAlphaX() { alphaX++; }
+    public void plusAlphaY() { alphaY++; }
+    public void plusAlphaZ() { alphaZ++; }
+    public void minusAlphaX() { alphaX--; }
+    public void minusAlphaY() { alphaY--; }
+    public void minusAlphaZ() { alphaZ--; }
 
     public void setTarget(Vector3f vector) {
         target = vector;
     }
 
-    public void setCameraPos(Vector3f cameraPos) {
-        this.cameraPos = cameraPos;
-    }
+//    public void setCameraPos(Vector3f cameraPos) {
+//        this.cameraPos = cameraPos;
+//    }
 
-    public Vector3f getCameraPos() {
-        return cameraPos;
-    }
+//    public Vector3f getCameraPos() {
+//        return cameraPos;
+//    }
 }
