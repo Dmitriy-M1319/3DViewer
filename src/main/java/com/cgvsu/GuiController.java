@@ -20,14 +20,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import java.nio.file.Path;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.cgvsu.render_engine.Camera;
 import com.cgvsu.render_engine.RenderEngine;
