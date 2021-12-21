@@ -45,9 +45,6 @@ public class GuiController {
 
     @FXML
     FlowPane modelMenu;
-
-    @FXML
-    public TextField changeScaleX, changeScaleY, changeScaleZ;
     
     @FXML
     private Canvas canvas;
@@ -55,8 +52,6 @@ public class GuiController {
     private ArrayList<RadioButton> radioButtons = new ArrayList<>();
     private ModelSettings actualModel = null;
     private ArrayList<ModelSettings> models = new ArrayList<>();
-
-    private char token = 'x';
 
     private float positionPrimaryButtonX = 0, positionPrimaryButtonY = 0,
             positionSecondaryButtonX = 0, positionSecondaryButtonY = 0,
@@ -170,33 +165,6 @@ public class GuiController {
         }
     }
 
-    @FXML
-    private void handleMakeScaleArea() {
-        Label name = new Label("Scale");
-        name.setAlignment(Pos.CENTER);
-        Label labelX = new Label("Set X coordinate");
-        Label labelY = new Label("Set Y coordinate");
-        Label labelZ = new Label("Set Z coordinate");
-
-        TextField setXArea = new TextField("1");
-        TextField setYArea = new TextField("1");
-        TextField setZArea = new TextField("1");
-
-        Button result = new Button("Scale");
-        result.setOnAction(actionEvent -> {
-            actualModel.setPercentX(Float.parseFloat(setXArea.getText()));
-            actualModel.setPercentY(Float.parseFloat(setYArea.getText()));
-            actualModel.setPercentZ(Float.parseFloat(setZArea.getText()));
-        });
-
-
-        if(graphicConveyorArea.getChildren().size() != 0) {
-            graphicConveyorArea.getChildren().clear();
-        }
-
-        graphicConveyorArea.getChildren().addAll(name, labelX, setXArea, labelY, setYArea, labelZ, setZArea, result);
-
-    }
 
     @FXML
     private void handleMakeTranslationArea() {
@@ -243,70 +211,6 @@ public class GuiController {
 
     }
 
-
-    @FXML
-    public void handleScalePlus(ActionEvent actionEvent) {
-        actualModel.setPercentX(actualModel.getPercentX() + 0.1F);
-        actualModel.setPercentY(actualModel.getPercentY() + 0.1F);
-        actualModel.setPercentZ(actualModel.getPercentY() + 0.1F);
-    }
-
-    @FXML
-    public void handleScaleMinus(ActionEvent actionEvent) {
-        actualModel.setPercentX(actualModel.getPercentX() - 0.1F);
-        actualModel.setPercentY(actualModel.getPercentY() - 0.1F);
-        actualModel.setPercentZ(actualModel.getPercentY() - 0.1F);
-    }
-
-    @FXML
-    public void handleSetX(ActionEvent actionEvent) { this.token = 'x';}
-
-    @FXML
-    public void handleSetY(ActionEvent actionEvent) { this.token = 'y';}
-    @FXML
-    public void handleSetZ(ActionEvent actionEvent) { this.token = 'z';}
-
-    @FXML
-    public void handleRotateRight(ActionEvent actionEvent) {
-        actualModel.plusAlphaX();
-    }
-    @FXML
-    public void handleRotateLeft(ActionEvent actionEvent) {
-        actualModel.minusAlphaX();
-    }
-
-    @FXML
-    public void handleRotateUp(ActionEvent actionEvent) {
-        actualModel.plusAlphaY();
-    }
-    @FXML
-    public void handleRotateDown(ActionEvent actionEvent) {
-        actualModel.minusAlphaY();
-    }
-    @FXML
-    public void handleRotateForward(ActionEvent actionEvent) {
-        actualModel.plusAlphaZ();
-    }
-    @FXML
-    public void handleRotateBackward(ActionEvent actionEvent) {
-        actualModel.minusAlphaZ();
-    }
-
-    @FXML
-    public void focusChangeScaleForX(MouseEvent mouseEvent) {
-        changeScaleX.requestFocus();
-    }
-
-    @FXML
-    public void focusChangeScaleForY(MouseEvent mouseEvent) {
-        changeScaleY.requestFocus();
-    }
-
-    @FXML
-    public void forChangeScaleForZ(MouseEvent mouseEvent) {
-        changeScaleZ.requestFocus();
-    }
-
     @FXML
     public void handleCameraForward(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(0, 0, -TRANSLATION));
@@ -325,6 +229,7 @@ public class GuiController {
     @FXML
     public void handleCameraRight(ActionEvent actionEvent) {
         camera.movePosition(new Vector3f(-TRANSLATION, 0, 0));
+
     }
 
     @FXML
@@ -339,53 +244,69 @@ public class GuiController {
 
     @FXML
     public void handlerRotateAndTranslateModel(MouseEvent mouseEvent) {
-        ModelSettings model = models.get(0);
+
+        modelSelectionGroup.selectedToggleProperty().addListener((changed, oldValue, newValue) -> {
+            RadioButton selectedBtn = (RadioButton) newValue;
+            actualModel = models.get(radioButtons.indexOf(selectedBtn));
+            handleMakeTranslationArea();
+        });
+
+        final float MAX_COORDINATE = 10;
         if (mouseEvent.isPrimaryButtonDown()) {
-            if (mouseEvent.getX() - positionPrimaryButtonX > 10) {
-                model.minusAlphaY();
+            if (mouseEvent.getX() - positionPrimaryButtonX > MAX_COORDINATE) {
+                actualModel.minusAlphaY();
                 positionPrimaryButtonX = (float) mouseEvent.getX();
-            } else if (mouseEvent.getX() - positionPrimaryButtonX < -10) {
-                model.plusAlphaY();
+            } else if (mouseEvent.getX() - positionPrimaryButtonX < -MAX_COORDINATE) {
+                actualModel.plusAlphaY();
                 positionPrimaryButtonX = (float) mouseEvent.getX();
             }
-            if (mouseEvent.getY() - positionPrimaryButtonY > 10) {
-                model.minusAlphaX();
+            if (mouseEvent.getY() - positionPrimaryButtonY > MAX_COORDINATE) {
+                actualModel.minusAlphaX();
                 positionPrimaryButtonY = (float) mouseEvent.getY();
-            } else if (mouseEvent.getY() - positionPrimaryButtonY < -10) {
-                model.plusAlphaX();
+            } else if (mouseEvent.getY() - positionPrimaryButtonY < -MAX_COORDINATE) {
+                actualModel.plusAlphaX();
                 positionPrimaryButtonY = (float) mouseEvent.getY();
             }
         }
         if (mouseEvent.isSecondaryButtonDown()) {
-            if (mouseEvent.getX() - positionSecondaryButtonX > 10) {
-                model.addX(-0.5f);
+            if (mouseEvent.getX() - positionSecondaryButtonX > MAX_COORDINATE) {
+                actualModel.addX(-TRANSLATION);
                 positionSecondaryButtonX = (float) mouseEvent.getX();
-            } else if (mouseEvent.getX() - positionSecondaryButtonX < -10) {
-                model.addX(0.5f);
+            } else if (mouseEvent.getX() - positionSecondaryButtonX < -MAX_COORDINATE) {
+                actualModel.addX(TRANSLATION);
                 positionSecondaryButtonX = (float) mouseEvent.getX();
             }
-            if (mouseEvent.getY() - positionSecondaryButtonY > 10) {
-                model.addY(-0.5f);
+            if (mouseEvent.getY() - positionSecondaryButtonY > MAX_COORDINATE) {
+                actualModel.addY(-TRANSLATION);
                 positionSecondaryButtonY = (float) mouseEvent.getY();
-            } else if (mouseEvent.getY() - positionSecondaryButtonY < -10) {
-                model.addY(0.5f);
+            } else if (mouseEvent.getY() - positionSecondaryButtonY < -MAX_COORDINATE) {
+                actualModel.addY(TRANSLATION);
                 positionSecondaryButtonY = (float) mouseEvent.getY();
             }
         }
+
+
         if (mouseEvent.isControlDown() && mouseEvent.isPrimaryButtonDown()) {
-            if (mouseEvent.getX() - positionPrimaryControlX > 10) {
-                model.minusAlphaZ();
+            if (mouseEvent.getX() - positionPrimaryControlX > MAX_COORDINATE) {
+                actualModel.minusAlphaZ();
                 positionPrimaryControlX = (float) mouseEvent.getX();
-            } else if (mouseEvent.getX() - positionPrimaryControlX < -10) {
-                model.plusAlphaZ();
+            } else if (mouseEvent.getX() - positionPrimaryControlX < -MAX_COORDINATE) {
+                actualModel.plusAlphaZ();
                 positionPrimaryControlX = (float) mouseEvent.getX();
             }
         }
     }
 
     @FXML
-    public void focusCanvas(MouseEvent mouseEvent) {
-        canvas.requestFocus();
+    public void handlerTranslateAlongZ(ScrollEvent scrollEvent) {
+        final float MIN_DELTA = 0;
+        if (scrollEvent.getDeltaY() > MIN_DELTA) {
+            final float SCALE_INCREASE_VALUE = 2;
+            actualModel.increaseScale(SCALE_INCREASE_VALUE);
+        } else {
+            final float SCALE_DECREASE_VALUE = 0.5f;
+            actualModel.increaseScale(SCALE_DECREASE_VALUE);
+        }
     }
 
     @FXML
@@ -398,14 +319,8 @@ public class GuiController {
             positionSecondaryButtonY = (float) mouseDragEvent.getY();
         }
     }
-
     @FXML
-    public void handlerTranslateAlongZ(ScrollEvent scrollEvent) {
-        ModelSettings model = models.get(0);
-        if (scrollEvent.getDeltaY() > 0) {
-             model.increaseScale(2);
-        } else {
-            model.increaseScale(-0.5f);
-        }
+    public void focusCanvas(MouseEvent mouseEvent) {
+        canvas.requestFocus();
     }
 }

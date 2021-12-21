@@ -64,7 +64,6 @@ public class ModelSettings {
 
     public void addZ(float additionZ) {
         this.target = new Vector3f(target.getX(), target.getY(), target.getZ() + additionZ);
-
     }
 
     public float getPercentY() {

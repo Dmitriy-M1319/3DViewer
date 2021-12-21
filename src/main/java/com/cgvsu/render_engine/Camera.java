@@ -41,6 +41,7 @@ public class Camera {
         return target;
     }
 
+
     public void movePosition(final Vector3f translation) {
        this.position = (Vector3f) this.position.sum(translation);
     }
@@ -52,6 +53,8 @@ public class Camera {
     Matrix4x4 getViewMatrix() throws Exception {
         return GraphicConveyor.lookAt(position, target);
     }
+
+
 
     Matrix4x4 getProjectionMatrix() throws Exception {
         return GraphicConveyor.perspective(fov, aspectRatio, nearPlane, farPlane);
