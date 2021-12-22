@@ -26,7 +26,7 @@ public class Simple3DViewer extends Application {
         stage.setTitle("Simple3DViewer");
         stage.setScene(scene);
         stage.show();
-    }
+    }   
 
     public static void main(String[] args) {
         launch();

@@ -32,7 +32,7 @@ import com.cgvsu.render_engine.RenderEngine;
 
 public class GuiController {
 
-    final private float TRANSLATION = 0.5F;
+    final private float TRANSLATION = 1F;
 
     @FXML
     AnchorPane anchorPane;
@@ -53,11 +53,11 @@ public class GuiController {
     private ModelSettings actualModel = null;
     private ArrayList<ModelSettings> models = new ArrayList<>();
 
-    private char token = 'x';
-
-    private float positionPrimaryButtonX = 0, positionPrimaryButtonY = 0,
-            positionSecondaryButtonX = 0, positionSecondaryButtonY = 0,
-            positionPrimaryControlX = 0;
+    private float firstPosX = 0,
+            firstPosY = 0,
+            secondPosX = 0,
+            secondPosY = 0,
+            FirstControlPositionX = 0;
 
     private final Camera camera = new Camera(
             new Vector3f(0, 0, 100),
@@ -255,46 +255,46 @@ public class GuiController {
 
         final float MAX_COORDINATE = 10;
         if (mouseEvent.isPrimaryButtonDown()) {
-            if (mouseEvent.getX() - positionPrimaryButtonX > MAX_COORDINATE) {
+            if (mouseEvent.getX() - firstPosX > MAX_COORDINATE) {
                 actualModel.minusAlphaY();
-                positionPrimaryButtonX = (float) mouseEvent.getX();
-            } else if (mouseEvent.getX() - positionPrimaryButtonX < -MAX_COORDINATE) {
+                firstPosX = (float) mouseEvent.getX();
+            } else if (mouseEvent.getX() - firstPosX < -MAX_COORDINATE) {
                 actualModel.plusAlphaY();
-                positionPrimaryButtonX = (float) mouseEvent.getX();
+                firstPosX = (float) mouseEvent.getX();
             }
-            if (mouseEvent.getY() - positionPrimaryButtonY > MAX_COORDINATE) {
+            if (mouseEvent.getY() - firstPosY > MAX_COORDINATE) {
                 actualModel.minusAlphaX();
-                positionPrimaryButtonY = (float) mouseEvent.getY();
-            } else if (mouseEvent.getY() - positionPrimaryButtonY < -MAX_COORDINATE) {
+                firstPosY = (float) mouseEvent.getY();
+            } else if (mouseEvent.getY() - firstPosY < -MAX_COORDINATE) {
                 actualModel.plusAlphaX();
-                positionPrimaryButtonY = (float) mouseEvent.getY();
+                firstPosY = (float) mouseEvent.getY();
             }
         }
         if (mouseEvent.isSecondaryButtonDown()) {
-            if (mouseEvent.getX() - positionSecondaryButtonX > MAX_COORDINATE) {
+            if (mouseEvent.getX() - secondPosX > MAX_COORDINATE) {
                 actualModel.addX(-TRANSLATION);
-                positionSecondaryButtonX = (float) mouseEvent.getX();
-            } else if (mouseEvent.getX() - positionSecondaryButtonX < -MAX_COORDINATE) {
+                secondPosX = (float) mouseEvent.getX();
+            } else if (mouseEvent.getX() - secondPosX < -MAX_COORDINATE) {
                 actualModel.addX(TRANSLATION);
-                positionSecondaryButtonX = (float) mouseEvent.getX();
+                secondPosX = (float) mouseEvent.getX();
             }
-            if (mouseEvent.getY() - positionSecondaryButtonY > MAX_COORDINATE) {
+            if (mouseEvent.getY() - secondPosY > MAX_COORDINATE) {
                 actualModel.addY(-TRANSLATION);
-                positionSecondaryButtonY = (float) mouseEvent.getY();
-            } else if (mouseEvent.getY() - positionSecondaryButtonY < -MAX_COORDINATE) {
+                secondPosY = (float) mouseEvent.getY();
+            } else if (mouseEvent.getY() - secondPosY < -MAX_COORDINATE) {
                 actualModel.addY(TRANSLATION);
-                positionSecondaryButtonY = (float) mouseEvent.getY();
+                secondPosY = (float) mouseEvent.getY();
             }
         }
 
 
         if (mouseEvent.isControlDown() && mouseEvent.isPrimaryButtonDown()) {
-            if (mouseEvent.getX() - positionPrimaryControlX > MAX_COORDINATE) {
+            if (mouseEvent.getX() - FirstControlPositionX > MAX_COORDINATE) {
                 actualModel.minusAlphaZ();
-                positionPrimaryControlX = (float) mouseEvent.getX();
-            } else if (mouseEvent.getX() - positionPrimaryControlX < -MAX_COORDINATE) {
+                FirstControlPositionX = (float) mouseEvent.getX();
+            } else if (mouseEvent.getX() - FirstControlPositionX < -MAX_COORDINATE) {
                 actualModel.plusAlphaZ();
-                positionPrimaryControlX = (float) mouseEvent.getX();
+                FirstControlPositionX = (float) mouseEvent.getX();
             }
         }
     }
@@ -314,11 +314,11 @@ public class GuiController {
     @FXML
     public void handlerStartDrag(MouseDragEvent mouseDragEvent) {
         if (mouseDragEvent.isPrimaryButtonDown()) {
-            positionPrimaryButtonX = (float) mouseDragEvent.getX();
-            positionPrimaryButtonY = (float) mouseDragEvent.getY();
+            firstPosX = (float) mouseDragEvent.getX();
+            firstPosY = (float) mouseDragEvent.getY();
         } else if (mouseDragEvent.isSecondaryButtonDown()) {
-            positionSecondaryButtonX = (float) mouseDragEvent.getX();
-            positionSecondaryButtonY = (float) mouseDragEvent.getY();
+            secondPosX = (float) mouseDragEvent.getX();
+            secondPosY = (float) mouseDragEvent.getY();
         }
     }
     @FXML
