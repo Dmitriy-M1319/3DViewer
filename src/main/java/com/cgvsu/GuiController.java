@@ -53,6 +53,8 @@ public class GuiController {
     private ModelSettings actualModel = null;
     private ArrayList<ModelSettings> models = new ArrayList<>();
 
+    private char token = 'x';
+
     private float positionPrimaryButtonX = 0, positionPrimaryButtonY = 0,
             positionSecondaryButtonX = 0, positionSecondaryButtonY = 0,
             positionPrimaryControlX = 0;

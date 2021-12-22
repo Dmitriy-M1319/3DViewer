@@ -2,11 +2,13 @@ package com.cgvsu.render_engine;
 
 import com.cgvsu.math.point.Point2f;
 import com.cgvsu.math.point.Point2fInt;
+import com.cgvsu.math.vector.Vector3f;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Drawing {
     public static float[][] depth_buffer;
@@ -19,6 +21,72 @@ public class Drawing {
             }
         }
     }
+
+    public static void drawTriangleWithZBuffer(ArrayList<Vector3f> vertexes, ArrayList<Point2f> points, GraphicsContext context, Color color) {
+        Point2f p1 = points.get(0);
+        Point2f p2 = points.get(1);
+        Point2f p3 = points.get(2);
+
+        float minX = findMinOrMax(p1.getX(), p2.getX(), p3.getX(), true);
+        float maxX = findMinOrMax(p1.getX(), p2.getX(), p3.getX(), false);
+        float minY = findMinOrMax(p1.getY(), p2.getY(), p3.getY(), true);
+        float maxY = findMinOrMax(p1.getY(), p2.getY(), p3.getY(), false);
+
+        Random random = new Random(); //проверка отрисовки полигонов с помощью разных цветов
+
+        for (float x = minX; x <= maxX; x++) {
+            for (float y = minY; y <= maxY; y++) {
+                float w0 = orient(p2, p3, new Point2f(x, y));
+                float w1 = orient(p3, p1, new Point2f(x, y));
+                float w2 = orient(p1, p2, new Point2f(x, y));
+
+                if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+                    //Считаем z координату
+                    Vector3f bary = barycentric(vertexes.get(0), vertexes.get(1), vertexes.get(2), new Vector3f(x, y, 0));
+                    if (bary == null) {
+                        continue;
+                    }
+
+                    float currentZ = vertexes.get(0).getZ() * bary.getZ() + vertexes.get(1).getZ() * bary.getX() + vertexes.get(2).getZ() * bary.getY();
+                    //Проверка на z буфер
+                    if (currentZ < depth_buffer[(int) x][(int) y]) {
+
+                        context.getPixelWriter().setColor((int) x, (int) y, color);
+                        depth_buffer[(int) x][(int) y] = currentZ;
+                    }
+                }
+            }
+        }
+    }
+
+    public static Vector3f barycentric(Vector3f v1, Vector3f v2, Vector3f v3, Vector3f p) {
+        //Считаем векторы осей
+        Vector3f v2v1 = new Vector3f(v2.getX() - v1.getX(), v2.getY() - v1.getY(), v2.getZ() - v1.getZ());
+        Vector3f v3v1 = new Vector3f(v3.getX() - v1.getX(), v3.getY() - v1.getY(), v3.getZ() - v1.getZ());
+        Vector3f v1p = new Vector3f(v1.getX() - p.getX(), v1.getY() - p.getY(), v1.getZ() - p.getZ());
+
+        //Считаем проекции на эти оси
+        Vector3f pX = new Vector3f(v2v1.getX(), v3v1.getX(), v1p.getX());
+        Vector3f pY = new Vector3f(v2v1.getY(), v3v1.getY(), v1p.getY());
+        Vector3f pZ = pX.vectorMultiply(pY);
+
+        if(pZ.getZ() == 0) {
+            return null;
+        }
+
+        //Считаем коэфы для точки
+        float alpha = pZ.getX() / pZ.getZ();
+        float beta = pZ.getY() / pZ.getZ();
+        float gamma = 1 - (alpha + beta);
+
+        return new Vector3f(alpha, beta, gamma);
+
+    }
+
+
+
+
+
 
     private static void swap(Point2f p0, Point2f p1) {
         float tmp = p0.getX();

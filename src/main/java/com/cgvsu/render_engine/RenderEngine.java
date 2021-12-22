@@ -2,6 +2,7 @@ package com.cgvsu.render_engine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Vector;
 
 import com.cgvsu.math.matrix.Matrix4x4;
@@ -11,6 +12,7 @@ import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.MyModel;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.VertexFormat;
 
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
@@ -39,18 +41,24 @@ public class RenderEngine {
             final int nVerticesInPolygon = model.getFaces().get(polygonInd).vertexIndexes.size();
 
             ArrayList<Point2f> resultPoints = new ArrayList<>();
+            ArrayList<Vector3f> projectionVertexes = new ArrayList<>();
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3f vertex = model.getVertexes().get((model.getFaces().get(polygonInd).vertexIndexes.get(vertexInPolygonInd)) - 1);
-                //Vector3f projectionVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
+                Vector3f projectionVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
+                projectionVertexes.add(projectionVertex);
 
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);
             }
 
             if (nVerticesInPolygon == 3) {
-                Drawing.drawFilledTriangle(resultPoints.get(0), resultPoints.get(1), resultPoints.get(2), graphicsContext);
+                Drawing.initDepthBuffer(width, height);
+                Random random = new Random();
+                Color color = Color.rgb(random.nextInt(255),random.nextInt(255), random.nextInt(255) );
+                Drawing.drawTriangleWithZBuffer(projectionVertexes, resultPoints, graphicsContext, color);
+                //Drawing.drawFilledTriangle(resultPoints.get(0), resultPoints.get(1), resultPoints.get(2), graphicsContext);
             }
-            graphicsContext.setStroke(Color.BLACK);
+            /*graphicsContext.setStroke(Color.BLACK);
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 graphicsContext.strokeLine(
                         resultPoints.get(vertexInPolygonInd - 1).getX(),
@@ -64,7 +72,7 @@ public class RenderEngine {
                         resultPoints.get(nVerticesInPolygon - 1).getX(),
                         resultPoints.get(nVerticesInPolygon - 1).getY(),
                         resultPoints.get(0).getX(),
-                        resultPoints.get(0).getY());
+                        resultPoints.get(0).getY());*/
 
 
         }
