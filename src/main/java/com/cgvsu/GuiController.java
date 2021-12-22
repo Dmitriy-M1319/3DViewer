@@ -270,6 +270,7 @@ public class GuiController {
                 firstPosY = (float) mouseEvent.getY();
             }
         }
+
         if (mouseEvent.isSecondaryButtonDown()) {
             if (mouseEvent.getX() - secondPosX > MAX_COORDINATE) {
                 actualModel.addX(-TRANSLATION);
