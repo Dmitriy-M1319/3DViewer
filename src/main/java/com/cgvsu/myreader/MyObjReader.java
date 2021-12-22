@@ -4,6 +4,7 @@ import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.Face;
 import com.cgvsu.model.MyModel;
+import com.cgvsu.model.Normals;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class MyObjReader {
         result.setVertexes(vertexes);
         result.setTextures(textures);
         result.setFaces(faces);
+        Normals.calculateNormals(result);
 
         return result;
     }

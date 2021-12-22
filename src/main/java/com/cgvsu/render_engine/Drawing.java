@@ -2,6 +2,8 @@ package com.cgvsu.render_engine;
 
 import com.cgvsu.math.point.Point2f;
 import com.cgvsu.math.point.Point2fInt;
+import com.cgvsu.math.vector.Vector3f;
+import com.cgvsu.model.Normals;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -30,7 +32,7 @@ public class Drawing {
         p1.setY(tmp);
     }
 
-    public static void drawFilledTriangle(Point2f v1, Point2f v2, Point2f v3, GraphicsContext context) {
+    public static void drawFilledTriangle(Point2f v1, Point2f v2, Point2f v3, GraphicsContext context, Color pixelColor) {
         float minX = findMinOrMax(v1.getX(), v2.getX(), v3.getX(), true);
         float maxX = findMinOrMax(v1.getX(), v2.getX(), v3.getX(), false);
         float minY = findMinOrMax(v1.getY(), v2.getY(), v3.getY(), true);
@@ -51,8 +53,8 @@ public class Drawing {
                 float w1 = orient(v3, v1, p);
                 float w2 = orient(v1, v2, p);
 
-                if(w0 >= 0 && w1 >= 0 && w2 >= 0) {
-                    context.getPixelWriter().setColor((int) x, (int) y, Color.GREEN);
+                if (w0 >= 0 && w1 >= 0 && w2 >= 0) {
+                    context.getPixelWriter().setColor((int) x, (int) y, pixelColor);
                 }
             }
         }

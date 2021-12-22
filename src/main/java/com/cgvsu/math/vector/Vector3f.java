@@ -58,6 +58,18 @@ public class Vector3f implements Vector {
         return new Vector3f(newX, newY, newZ);
     }
 
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
