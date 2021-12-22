@@ -4,6 +4,7 @@ import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.ModelSettings;
 import com.cgvsu.model.MyModel;
 import com.cgvsu.myreader.MyObjReader;
+import com.cgvsu.model.Normals;
 import com.cgvsu.obj_writer.ObjWriter;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -89,6 +90,7 @@ public class GuiController {
 
             //Сохраняем старую позицию камеры для модели, выставляем камеру для текущей модели
             actualModel = models.get(radioButtons.indexOf(selectedBtn));
+            camera.setTarget(actualModel.getTarget());
             handleMakeTranslationArea();
         });
 
@@ -107,6 +109,7 @@ public class GuiController {
                         models) {
                     try {
                         model.getModel().triangulateFaces();
+                        Normals.calculateNormals(model.getModel());
                         RenderEngine.render(canvas.getGraphicsContext2D(), camera, model.getModel(),
                                 (int) width, (int) height,
                                 model.getPercentX(), model.getPercentY(), model.getPercentZ(),
