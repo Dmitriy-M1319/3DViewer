@@ -3,6 +3,7 @@ package com.cgvsu;
 import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.ModelSettings;
 import com.cgvsu.model.MyModel;
+import com.cgvsu.model.Texture;
 import com.cgvsu.myreader.MyObjReader;
 import com.cgvsu.obj_writer.ObjWriter;
 import javafx.event.EventHandler;
@@ -52,6 +53,7 @@ public class GuiController {
     private ArrayList<RadioButton> radioButtons = new ArrayList<>();
     private ModelSettings actualModel = null;
     private ArrayList<ModelSettings> models = new ArrayList<>();
+
 
     private float firstPosX = 0,
             firstPosY = 0,
@@ -122,6 +124,28 @@ public class GuiController {
     }
 
     private int counter = 1;
+
+    @FXML
+    private void onLoadTextureMenuItemClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Texture (*.png)", "*.png"));
+        fileChooser.setTitle("Load texture");
+
+        File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        Path fileName = Path.of(file.getAbsolutePath());
+
+        try {
+            Texture texture = new Texture(fileName.toString());
+            RadioButton button = new RadioButton("Texture " + Integer.toString(counter));
+            actualModel.addTexture(texture);
+        } catch (Exception exception) {
+            exceptionHandler(exception);
+        }
+    }
 
     @FXML
     private void onOpenModelMenuItemClick() {

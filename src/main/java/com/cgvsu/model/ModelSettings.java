@@ -11,6 +11,7 @@ public class ModelSettings {
     private float alphaY;
     private float alphaZ;
     private Vector3f target;
+    private Texture texture;
 
     public ModelSettings(MyModel model) {
         this.model = model;
@@ -21,6 +22,10 @@ public class ModelSettings {
         alphaY = 90;
         alphaZ = 90;
         target = new Vector3f(0 ,0,0);
+    }
+
+    public void addTexture(Texture texture) {
+        this.texture = texture;
     }
 
     public MyModel getModel() {
