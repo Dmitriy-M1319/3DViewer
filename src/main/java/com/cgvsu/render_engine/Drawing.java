@@ -2,13 +2,14 @@ package com.cgvsu.render_engine;
 
 import com.cgvsu.math.point.Point2f;
 import com.cgvsu.math.point.Point2fInt;
+import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
+import com.cgvsu.model.Texture;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Drawing {
     public static float[][] depth_buffer;
@@ -22,7 +23,12 @@ public class Drawing {
         }
     }
 
-    public static void drawTriangleWithZBuffer(ArrayList<Vector3f> vertexes, ArrayList<Point2f> points, GraphicsContext context, Color color) {
+    public static void drawTriangleWithZBuffer(ArrayList<Vector3f> vertexes,
+                                               ArrayList<Point2f> points,
+                                               GraphicsContext context,
+                                               Color color,
+                                               ArrayList<Vector2f> textureCoords,
+                                               Texture texture) {
         Point2f p1 = points.get(0);
         Point2f p2 = points.get(1);
         Point2f p3 = points.get(2);
@@ -32,7 +38,6 @@ public class Drawing {
         float minY = findMinOrMax(p1.getY(), p2.getY(), p3.getY(), true);
         float maxY = findMinOrMax(p1.getY(), p2.getY(), p3.getY(), false);
 
-        Random random = new Random(); //проверка отрисовки полигонов с помощью разных цветов
 
         for (float x = minX; x <= maxX; x++) {
             for (float y = minY; y <= maxY; y++) {
@@ -50,6 +55,11 @@ public class Drawing {
                     float currentZ = vertexes.get(0).getZ() * bary.getZ() + vertexes.get(1).getZ() * bary.getX() + vertexes.get(2).getZ() * bary.getY();
                     //Проверка на z буфер
                     if (currentZ < depth_buffer[(int) x][(int) y]) {
+
+                       int width = texture.getTextureWidth();
+                       int height = texture.getTextureHeight();
+                       //Перегнали из координат экрана в координаты от -1 до 1
+                       Vector2f vertex = GraphicConveyor.pointToVertex(new Point2f(x, y), (int) context.getCanvas().getWidth(), (int) context.getCanvas().getWidth());
 
                         context.getPixelWriter().setColor((int) x, (int) y, color);
                         depth_buffer[(int) x][(int) y] = currentZ;
@@ -198,8 +208,7 @@ public class Drawing {
         //TrianglePart(v3.getX(), v2.getX(), v3.getY(), upDelta, downDelta, context, Color.BLUE );
     }
 
-    private static void TrianglePart(float x1 , float x2 , float y1  , float upDelta , float downDelta, GraphicsContext context, Color color)
-    {
+    private static void TrianglePart(float x1 , float x2 , float y1  , float upDelta , float downDelta, GraphicsContext context, Color color) {
         float up = y1, down = y1;
         for (int i = (int)x1; i <= (int)x2; i++)
         {
