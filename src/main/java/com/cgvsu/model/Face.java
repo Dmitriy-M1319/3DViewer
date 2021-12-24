@@ -23,7 +23,6 @@ public class Face {
     public static ArrayList<Face> triangulate(Face face) {
         ArrayList<ArrayList<Integer>> vertexInd = null;
         ArrayList<ArrayList<Integer>> textureVertexInd = null;
-        ArrayList<ArrayList<Integer>> normalInd = null;
 
         if (!face.vertexIndexes.isEmpty()) {
             vertexInd = triangulateListOfIndexes(face.vertexIndexes);
@@ -31,13 +30,10 @@ public class Face {
         if (!face.textureVertexIndexes.isEmpty()) {
             textureVertexInd = triangulateListOfIndexes(face.textureVertexIndexes);
         }
-        if (!face.normalIndexes.isEmpty()) {
-            normalInd = triangulateListOfIndexes(face.normalIndexes);
-        }
 
         ArrayList<Face> result = new ArrayList<>();
         for (int i = 0; i < vertexInd.size(); i++) {
-            Face newFace = new Face(vertexInd.get(i), textureVertexInd.get(i), normalInd.get(i));
+            Face newFace = new Face(vertexInd.get(i), textureVertexInd.get(i), new ArrayList<>());
             result.add(newFace);
         }
 
