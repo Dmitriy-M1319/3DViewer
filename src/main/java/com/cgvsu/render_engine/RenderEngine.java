@@ -64,21 +64,21 @@ public class RenderEngine {
                 Color color = Color.GREEN;
                 Drawing.drawTriangleWithZBuffer(projectionVertexes, resultPoints, graphicsContext, color, textureCoords, texture);
             }
-            graphicsContext.setStroke(Color.BLACK);
-            for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
-                graphicsContext.strokeLine(
-                        resultPoints.get(vertexInPolygonInd - 1).getX(),
-                        resultPoints.get(vertexInPolygonInd - 1).getY(),
-                        resultPoints.get(vertexInPolygonInd).getX(),
-                        resultPoints.get(vertexInPolygonInd).getY());
-            }
-
-            if (nVerticesInPolygon > 0)
-                graphicsContext.strokeLine(
-                        resultPoints.get(nVerticesInPolygon - 1).getX(),
-                        resultPoints.get(nVerticesInPolygon - 1).getY(),
-                        resultPoints.get(0).getX(),
-                        resultPoints.get(0).getY());    
+//            graphicsContext.setStroke(Color.BLACK);
+//            for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
+//                graphicsContext.strokeLine(
+//                        resultPoints.get(vertexInPolygonInd - 1).getX(),
+//                        resultPoints.get(vertexInPolygonInd - 1).getY(),
+//                        resultPoints.get(vertexInPolygonInd).getX(),
+//                        resultPoints.get(vertexInPolygonInd).getY());
+//            }
+//
+//            if (nVerticesInPolygon > 0)
+//                graphicsContext.strokeLine(
+//                        resultPoints.get(nVerticesInPolygon - 1).getX(),
+//                        resultPoints.get(nVerticesInPolygon - 1).getY(),
+//                        resultPoints.get(0).getX(),
+//                        resultPoints.get(0).getY());
 
 
         }

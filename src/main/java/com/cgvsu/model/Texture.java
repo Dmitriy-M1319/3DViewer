@@ -24,6 +24,9 @@ public class Texture {
     }
 
     public Color getColors(int x, int y) {
+        if (x == getTextureWidth() || y == getTextureHeight()) {
+            return Color.BLACK;
+        }
         return colors[x][y];
     }
 }
