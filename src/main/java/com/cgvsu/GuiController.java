@@ -67,7 +67,7 @@ public class GuiController {
     private Timeline timeline;
 
     @FXML
-    public void exceptionHandler(Exception exception){
+    public void exceptionHandler(Exception exception) {
         exception.printStackTrace();
         Alert alert = new Alert(Alert.AlertType.ERROR, "Sorry, but program have got an error while processing your request ;<(" +
                 "\n" + exception.getMessage(), ButtonType.OK);
@@ -287,7 +287,6 @@ public class GuiController {
                 secondPosY = (float) mouseEvent.getY();
             }
         }
-
 
         if (mouseEvent.isControlDown() && mouseEvent.isPrimaryButtonDown()) {
             if (mouseEvent.getX() - FirstControlPositionX > MAX_COORDINATE) {
