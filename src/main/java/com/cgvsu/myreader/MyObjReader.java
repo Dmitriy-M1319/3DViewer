@@ -1,5 +1,6 @@
 package com.cgvsu.myreader;
 
+import com.cgvsu.math.Normals;
 import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.Face;
@@ -46,6 +47,7 @@ public class MyObjReader {
         result.setVertexes(vertexes);
         result.setTextures(textures);
         result.setFaces(faces);
+        Normals.calculateNormals(result);
 
         return result;
     }
