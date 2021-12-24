@@ -53,27 +53,30 @@ public class Drawing {
                     float currentZ = vertexes.get(0).getZ() * bary.getZ() + vertexes.get(1).getZ() * bary.getX() + vertexes.get(2).getZ() * bary.getY();
                     //Проверка на z буфер
                     if (currentZ < depth_buffer[(int) x][(int) y]) {
+                        if(texture == null) {
+                            context.getPixelWriter().setColor((int) x, (int) y, color);
+                        } else {
+                            int width = texture.getTextureWidth();
+                            int height = texture.getTextureHeight();
+                            //Перегнали из координат экрана в координаты от -1 до 1
+                            Vector2f vertex = GraphicConveyor.pointToVertex(new Point2f(x, y), (int) context.getCanvas().getWidth(), (int) context.getCanvas().getWidth());
+                            //Рассчитали барицентрические координаты
+                            Vector3f baryc = barycentric(vertexes.get(0), vertexes.get(1), vertexes.get(2), new Vector3f(vertex.getX(), vertex.getY(), 0));
+                            //Теперь перегоняем координаты текстуры в ее экранные координаты
+                            Point2f t1 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(0).getX(), textureCoords.get(0).getY(), 0), width, height);
+                            Point2f t2 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(1).getX(), textureCoords.get(1).getY(), 0), width, height);
+                            Point2f t3 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(2).getX(), textureCoords.get(2).getY(), 0), width, height);
 
-                        int width = texture.getTextureWidth();
-                        int height = texture.getTextureHeight();
-                        //Перегнали из координат экрана в координаты от -1 до 1
-                        Vector2f vertex = GraphicConveyor.pointToVertex(new Point2f(x, y), (int) context.getCanvas().getWidth(), (int) context.getCanvas().getWidth());
-                        //Рассчитали барицентрические координаты
-                        Vector3f baryc =  barycentric(vertexes.get(0), vertexes.get(1), vertexes.get(2), new Vector3f(vertex.getX(), vertex.getY(), 0));
-                        //Теперь перегоняем координаты текстуры в ее экранные координаты
-                        Point2f t1 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(0).getX(), textureCoords.get(0).getY(), 0), width, height);
-                        Point2f t2 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(1).getX(), textureCoords.get(1).getY(), 0), width, height);
-                        Point2f t3 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(2).getX(), textureCoords.get(2).getY(), 0), width, height);
+                            //Считаем x и y по полученным барицентрикам
+                            float xt = t1.getX() * baryc.getZ() + t2.getX() * baryc.getX() + t3.getX() * baryc.getY();
+                            float yt = t1.getY() * baryc.getZ() + t2.getY() * baryc.getX() + t3.getY() * baryc.getY();
 
-                        //Считаем x и y по полученным барицентрикам
-                        float xt = t1.getX() * baryc.getZ() + t2.getX() * baryc.getX() + t3.getX() * baryc.getY();
-                        float yt = t1.getY() * baryc.getZ() + t2.getY() * baryc.getX() + t3.getY() * baryc.getY();
+                            //Берем пиксель и рисуем им
+                            java.awt.Color c = texture.getColors((int) xt, (int) yt);
+                            Color col = Color.rgb(c.getRed(), c.getGreen(), c.getBlue());
 
-                        //Берем пиксель и рисуем им
-                        java.awt.Color c = texture.getColors((int)xt, (int)yt);
-                        Color col = Color.rgb(c.getRed(), c.getGreen(), c.getBlue());
-
-                        context.getPixelWriter().setColor((int) x, (int) y, col);
+                            context.getPixelWriter().setColor((int) x, (int) y, col);
+                        }
                         depth_buffer[(int) x][(int) y] = currentZ;
                     }
                 }

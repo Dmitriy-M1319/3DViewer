@@ -110,12 +110,12 @@ public class GuiController {
                                 (int) width, (int) height,
                                 model.getPercentX(), model.getPercentY(), model.getPercentZ(),
                                 model.getAlphaX(), model.getAlphaY(), model.getAlphaZ(),
-                                model.getTarget());
+                                model.getTarget(),
+                                model.getTexture());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                //RenderEngine.render(canvas.getGraphicsContext2D(), camera, actualModel.getModel(), (int) width, (int) height, actualModel.getPercentX(),actualModel.getPercentY(), actualModel.getPercentZ(), actualModel.getAlpha(), actualModel.getTarget(), token);
             }
         });
 
@@ -124,11 +124,11 @@ public class GuiController {
     }
 
     private int counter = 1;
-
+    private int counterOfTextures = 0;
     @FXML
     private void onLoadTextureMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Texture (*.png)", "*.png"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Texture (*.jpg)", "*.jpg"));
         fileChooser.setTitle("Load texture");
 
         File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
@@ -141,7 +141,8 @@ public class GuiController {
         try {
             Texture texture = new Texture(fileName.toString());
             RadioButton button = new RadioButton("Texture " + Integer.toString(counter));
-            actualModel.addTexture(texture);
+            models.get(counterOfTextures).addTexture(texture);
+           // actualModel.addTexture(texture);
         } catch (Exception exception) {
             exceptionHandler(exception);
         }

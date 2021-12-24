@@ -11,6 +11,7 @@ import com.cgvsu.math.point.Point2fInt;
 import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.MyModel;
+import com.cgvsu.model.Texture;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.VertexFormat;
@@ -31,7 +32,8 @@ public class RenderEngine {
             final float alphaX,
             final float alphaY,
             final float alphaZ,
-            final Vector3f target) throws Exception {
+            final Vector3f target,
+            final Texture texture) throws Exception {
         Matrix4x4 modelMatrix = scaleRotateTranslate(percentX, percentY, percentZ, alphaX, alphaY, alphaZ, target);
         Matrix4x4 viewMatrix = camera.getViewMatrix();
         Matrix4x4 projectionMatrix = camera.getProjectionMatrix();
@@ -53,17 +55,14 @@ public class RenderEngine {
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);
 
-                Vector2f textureVertex = model.getTextures().get((model.getFaces().get(polygonInd).textureVertexIndexes.get(vertexInPolygonInd)));
+                Vector2f textureVertex = model.getTextures().get((model.getFaces().get(polygonInd).textureVertexIndexes.get(vertexInPolygonInd)) - 1);
                 textureCoords.add(textureVertex);
             }
 
             if (nVerticesInPolygon == 3) {
                 Drawing.initDepthBuffer(width, height);
                 Color color = Color.GREEN;
-//                Random random = new Random();
-//                Color color = Color.rgb(random.nextInt(255),random.nextInt(255), random.nextInt(255) );
-                Drawing.drawTriangleWithZBuffer(projectionVertexes, resultPoints, graphicsContext, color, textureCoords, null);
-                //Drawing.drawFilledTriangle(resultPoints.get(0), resultPoints.get(1), resultPoints.get(2), graphicsContext);
+                Drawing.drawTriangleWithZBuffer(projectionVertexes, resultPoints, graphicsContext, color, textureCoords, texture);
             }
             graphicsContext.setStroke(Color.BLACK);
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {

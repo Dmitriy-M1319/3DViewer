@@ -11,6 +11,11 @@ public class ModelSettings {
     private float alphaY;
     private float alphaZ;
     private Vector3f target;
+
+    public Texture getTexture() {
+        return texture;
+    }
+
     private Texture texture;
 
     public ModelSettings(MyModel model) {
