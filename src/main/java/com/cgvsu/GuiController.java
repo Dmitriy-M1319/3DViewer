@@ -52,6 +52,7 @@ public class GuiController {
     private ToggleGroup modelSelectionGroup = new ToggleGroup();
     private ArrayList<RadioButton> radioButtons = new ArrayList<>();
     private ModelSettings actualModel = null;
+    private int currentModelIndex = 0;
     private ArrayList<ModelSettings> models = new ArrayList<>();
 
 
@@ -88,6 +89,7 @@ public class GuiController {
 
             //Сохраняем старую позицию камеры для модели, выставляем камеру для текущей модели
             actualModel = models.get(radioButtons.indexOf(selectedBtn));
+            currentModelIndex = radioButtons.indexOf(selectedBtn);
             handleMakeTranslationArea();
         });
 
@@ -124,7 +126,7 @@ public class GuiController {
     }
 
     private int counter = 1;
-    private int counterOfTextures = 0;
+
     @FXML
     private void onLoadTextureMenuItemClick() {
         FileChooser fileChooser = new FileChooser();
@@ -140,8 +142,7 @@ public class GuiController {
 
         try {
             Texture texture = new Texture(fileName.toString());
-            RadioButton button = new RadioButton("Texture " + Integer.toString(counter));
-            models.get(counterOfTextures).addTexture(texture);
+            models.get(currentModelIndex).addTexture(texture);
            // actualModel.addTexture(texture);
         } catch (Exception exception) {
             exceptionHandler(exception);
@@ -271,13 +272,6 @@ public class GuiController {
 
     @FXML
     public void handlerRotateAndTranslateModel(MouseEvent mouseEvent) {
-
-        modelSelectionGroup.selectedToggleProperty().addListener((changed, oldValue, newValue) -> {
-            RadioButton selectedBtn = (RadioButton) newValue;
-            actualModel = models.get(radioButtons.indexOf(selectedBtn));
-            handleMakeTranslationArea();
-        });
-
         final float MAX_COORDINATE = 10;
         if (mouseEvent.isPrimaryButtonDown()) {
             if (mouseEvent.getX() - firstPosX > MAX_COORDINATE) {
