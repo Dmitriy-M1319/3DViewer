@@ -1,14 +1,13 @@
 package com.cgvsu.render_engine;
 
 import com.cgvsu.math.point.Point2f;
-import com.cgvsu.math.point.Point2fInt;
+import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
+import com.cgvsu.model.Texture;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Drawing {
     public static float[][] depth_buffer;
@@ -22,7 +21,12 @@ public class Drawing {
         }
     }
 
-    public static void drawTriangleWithZBuffer(ArrayList<Vector3f> vertexes, ArrayList<Point2f> points, GraphicsContext context, Color color) {
+    public static void drawTriangleWithZBuffer(ArrayList<Vector3f> vertexes,
+                                               ArrayList<Point2f> points,
+                                               GraphicsContext context,
+                                               Color color,
+                                               ArrayList<Vector2f> textureCoords,
+                                               Texture texture) {
         Point2f p1 = points.get(0);
         Point2f p2 = points.get(1);
         Point2f p3 = points.get(2);
@@ -32,7 +36,6 @@ public class Drawing {
         float minY = findMinOrMax(p1.getY(), p2.getY(), p3.getY(), true);
         float maxY = findMinOrMax(p1.getY(), p2.getY(), p3.getY(), false);
 
-        Random random = new Random(); //проверка отрисовки полигонов с помощью разных цветов
 
         for (float x = minX; x <= maxX; x++) {
             for (float y = minY; y <= maxY; y++) {
@@ -51,7 +54,26 @@ public class Drawing {
                     //Проверка на z буфер
                     if (currentZ < depth_buffer[(int) x][(int) y]) {
 
-                        context.getPixelWriter().setColor((int) x, (int) y, color);
+                        int width = texture.getTextureWidth();
+                        int height = texture.getTextureHeight();
+                        //Перегнали из координат экрана в координаты от -1 до 1
+                        Vector2f vertex = GraphicConveyor.pointToVertex(new Point2f(x, y), (int) context.getCanvas().getWidth(), (int) context.getCanvas().getWidth());
+                        //Рассчитали барицентрические координаты
+                        Vector3f baryc =  barycentric(vertexes.get(0), vertexes.get(1), vertexes.get(2), new Vector3f(vertex.getX(), vertex.getY(), 0));
+                        //Теперь перегоняем координаты текстуры в ее экранные координаты
+                        Point2f t1 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(0).getX(), textureCoords.get(0).getY(), 0), width, height);
+                        Point2f t2 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(1).getX(), textureCoords.get(1).getY(), 0), width, height);
+                        Point2f t3 = GraphicConveyor.vertexToPoint(new Vector3f(textureCoords.get(2).getX(), textureCoords.get(2).getY(), 0), width, height);
+
+                        //Считаем x и y по полученным барицентрикам
+                        float xt = t1.getX() * baryc.getZ() + t2.getX() * baryc.getX() + t3.getX() * baryc.getY();
+                        float yt = t1.getY() * baryc.getZ() + t2.getY() * baryc.getX() + t3.getY() * baryc.getY();
+
+                        //Берем пиксель и рисуем им
+                        java.awt.Color c = texture.getColors((int)xt, (int)yt);
+                        Color col = Color.rgb(c.getRed(), c.getGreen(), c.getBlue());
+
+                        context.getPixelWriter().setColor((int) x, (int) y, col);
                         depth_buffer[(int) x][(int) y] = currentZ;
                     }
                 }
@@ -198,8 +220,7 @@ public class Drawing {
         //TrianglePart(v3.getX(), v2.getX(), v3.getY(), upDelta, downDelta, context, Color.BLUE );
     }
 
-    private static void TrianglePart(float x1 , float x2 , float y1  , float upDelta , float downDelta, GraphicsContext context, Color color)
-    {
+    private static void TrianglePart(float x1 , float x2 , float y1  , float upDelta , float downDelta, GraphicsContext context, Color color) {
         float up = y1, down = y1;
         for (int i = (int)x1; i <= (int)x2; i++)
         {

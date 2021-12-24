@@ -15,6 +15,14 @@ public class Texture {
         colors = ImageReader.loadPixelsFromImage(imageFile);
     }
 
+    public int getTextureWidth() {
+        return colors[0].length;
+    }
+
+    public int getTextureHeight() {
+        return colors.length;
+    }
+
     public Color getColors(int x, int y) {
         return colors[x][y];
     }

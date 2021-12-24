@@ -8,6 +8,7 @@ import java.util.Vector;
 import com.cgvsu.math.matrix.Matrix4x4;
 import com.cgvsu.math.point.Point2f;
 import com.cgvsu.math.point.Point2fInt;
+import com.cgvsu.math.vector.Vector2f;
 import com.cgvsu.math.vector.Vector3f;
 import com.cgvsu.model.MyModel;
 import javafx.scene.canvas.GraphicsContext;
@@ -42,6 +43,8 @@ public class RenderEngine {
 
             ArrayList<Point2f> resultPoints = new ArrayList<>();
             ArrayList<Vector3f> projectionVertexes = new ArrayList<>();
+            ArrayList<Vector2f> textureCoords = new ArrayList<>();
+
             for (int vertexInPolygonInd = 0; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 Vector3f vertex = model.getVertexes().get((model.getFaces().get(polygonInd).vertexIndexes.get(vertexInPolygonInd)) - 1);
                 Vector3f projectionVertex = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex);
@@ -49,16 +52,20 @@ public class RenderEngine {
 
                 Point2f resultPoint = vertexToPoint(multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertex), width, height);
                 resultPoints.add(resultPoint);
+
+                Vector2f textureVertex = model.getTextures().get((model.getFaces().get(polygonInd).textureVertexIndexes.get(vertexInPolygonInd)));
+                textureCoords.add(textureVertex);
             }
 
             if (nVerticesInPolygon == 3) {
                 Drawing.initDepthBuffer(width, height);
-                Random random = new Random();
-                Color color = Color.rgb(random.nextInt(255),random.nextInt(255), random.nextInt(255) );
-                Drawing.drawTriangleWithZBuffer(projectionVertexes, resultPoints, graphicsContext, color);
+                Color color = Color.GREEN;
+//                Random random = new Random();
+//                Color color = Color.rgb(random.nextInt(255),random.nextInt(255), random.nextInt(255) );
+                Drawing.drawTriangleWithZBuffer(projectionVertexes, resultPoints, graphicsContext, color, textureCoords, null);
                 //Drawing.drawFilledTriangle(resultPoints.get(0), resultPoints.get(1), resultPoints.get(2), graphicsContext);
             }
-            /*graphicsContext.setStroke(Color.BLACK);
+            graphicsContext.setStroke(Color.BLACK);
             for (int vertexInPolygonInd = 1; vertexInPolygonInd < nVerticesInPolygon; ++vertexInPolygonInd) {
                 graphicsContext.strokeLine(
                         resultPoints.get(vertexInPolygonInd - 1).getX(),
@@ -72,7 +79,7 @@ public class RenderEngine {
                         resultPoints.get(nVerticesInPolygon - 1).getX(),
                         resultPoints.get(nVerticesInPolygon - 1).getY(),
                         resultPoints.get(0).getX(),
-                        resultPoints.get(0).getY());*/
+                        resultPoints.get(0).getY());    
 
 
         }
